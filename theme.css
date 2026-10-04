@@ -1,0 +1,218 @@
+/* ============================================================
+   Ariel AI Hub — shared design system
+   Single source of truth for palette, type, shape and elevation.
+   Pages keep their own layout CSS and consume these tokens.
+
+   Locked system (do not mix):
+     · Accent  : one only — indigo (--accent). No second brand hue.
+                 Status colors (ok / warn / danger) are semantic, not brand.
+     · Radius  : controls 12px · cards/panels 20px · icon chips 12px · tags pill
+     · Type    : Rubik (display) + Assistant (body/UI), both full Hebrew.
+                 IBM Plex Mono for code and figures.
+     · Theme   : one theme per page. Follows prefers-color-scheme and can be
+                 pinned with [data-theme="light"|"dark"] on <html>.
+
+   Every page links this file BEFORE its own <style>, so page rules still win
+   for layout. Legacy token names from the pre-migration pages are aliased at
+   the bottom, which is why existing page CSS picks up the new palette
+   without being rewritten.
+   ============================================================ */
+
+:root{
+  /* ---- dark brand mass: rails, heroes, feature tiles ---- */
+  --ink-950:#171543;
+  --ink-900:#211d5c;
+
+  /* ---- the single accent ---- */
+  --accent:#4F46E5;
+  --accent-strong:#4338ca;
+  --accent-on:#ffffff;          /* text that sits ON a filled accent */
+  --accent-soft:#EEF2FF;
+  --accent-line:#C7D2FE;
+  --accent-glow:rgba(79,70,229,.14);
+  --accent-wash:rgba(79,70,229,.22);   /* marker-pen highlight behind text */
+  --gradient:linear-gradient(135deg,#4F46E5 0%,#7C3AED 100%);
+
+  /* ---- neutrals: one cool-slate family, three text steps ---- */
+  --ink:#0F172A;                /* primary text */
+  --body:#475569;               /* secondary text */
+  --muted:#5C6A82;              /* tertiary text — AA against --paper, not just white */
+  --paper:#F5F6FB;
+  --surface:#ffffff;
+  --surface-2:#FAFAFE;
+  --line:#E4E7F0;
+  --line-soft:#EEF0F7;
+  --field-line:#858FA3;         /* control boundaries need 3:1 (WCAG 1.4.11) */
+
+  /* ---- on-dark text. These sit on the always-dark brand mass (rail, hero,
+         action bar), so they do NOT flip with the theme. ---- */
+  --d-title:#F7F7FF; --d-body:#C3C6EE; --d-dim:#9095CE; --d-accent:#A5ABFF;
+  --d-line:rgba(255,255,255,.14);
+  /* gradient for the dark mass. Stays dark in both themes, so the light text
+     on top of it keeps its contrast. Never build one of these out of --accent,
+     which flips light in dark mode. */
+  --brand-gradient:linear-gradient(135deg,#171543 0%,#3B32A0 100%);
+
+  /* ---- semantic status ---- */
+  --ok:#0F7B54;     --ok-soft:#E7F6EF;     --ok-line:#BBE5D1;
+  --warn:#8A5B12;   --warn-soft:#FBF1DF;   --warn-line:#EBD4A8;
+  --danger:#B42318; --danger-soft:#FEF3F2; --danger-line:#F6C9C4;
+
+  /* text that sits ON any filled accent or status surface */
+  --on-fill:#ffffff;
+
+  /* ---- shape ---- */
+  --r-ctl:12px; --r-card:20px; --r-chip:12px; --r-pill:999px;
+
+  /* ---- elevation, tinted to the accent hue, never pure black ---- */
+  --e1:0 1px 2px rgba(23,21,67,.05), 0 6px 18px -8px rgba(79,70,229,.14);
+  --e2:0 2px 4px rgba(23,21,67,.05), 0 18px 40px -16px rgba(79,70,229,.30);
+
+  /* ---- type ---- */
+  --font-ui:'Assistant',system-ui,-apple-system,'Segoe UI','Noto Sans Hebrew',sans-serif;
+  --font-display:'Rubik','Assistant',system-ui,sans-serif;
+  --font-mono:'IBM Plex Mono','Cascadia Mono',Consolas,monospace;
+
+  /* ---- rhythm ---- */
+  --measure:1220px;
+  --gutter:clamp(18px,3.2vw,40px);
+  --gap:16px;
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+
+/* ---- dark: follows the OS unless the page pins light ---- */
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --accent:#8B93FF; --accent-strong:#A5ABFF; --accent-on:#0A0A1C;
+    --accent-soft:rgba(139,147,255,.13); --accent-line:#3A3782;
+    --accent-glow:rgba(139,147,255,.16);
+    --accent-wash:rgba(139,147,255,.28);
+    --gradient:linear-gradient(135deg,#8B93FF 0%,#A78BFA 100%);
+
+    --ink:#EEF0FA; --body:#B9C0D6; --muted:#8C95B4;
+    --paper:#0A0A1C; --surface:#141333; --surface-2:#191741;
+    --line:#2C2A63; --line-soft:#221F50; --field-line:#6764B5;
+
+    --ok:#3DD68C;     --ok-soft:rgba(61,214,140,.14);   --ok-line:rgba(61,214,140,.42);
+    --warn:#E0B252;   --warn-soft:rgba(224,178,82,.14);  --warn-line:rgba(224,178,82,.42);
+    --danger:#FF9086; --danger-soft:rgba(255,144,134,.14); --danger-line:rgba(255,144,134,.42);
+    --on-fill:#0A0A1C;
+
+    --e1:0 1px 2px rgba(0,0,0,.4), 0 6px 18px -8px rgba(0,0,0,.6);
+    --e2:0 2px 4px rgba(0,0,0,.4), 0 18px 40px -16px rgba(0,0,0,.7);
+  }
+}
+/* ---- dark: pinned by the page ---- */
+:root[data-theme="dark"]{
+  --accent:#8B93FF; --accent-strong:#A5ABFF; --accent-on:#0A0A1C;
+  --accent-soft:rgba(139,147,255,.13); --accent-line:#3A3782;
+  --accent-glow:rgba(139,147,255,.16);
+  --accent-wash:rgba(139,147,255,.28);
+  --gradient:linear-gradient(135deg,#8B93FF 0%,#A78BFA 100%);
+
+  --ink:#EEF0FA; --body:#B9C0D6; --muted:#8C95B4;
+  --paper:#0A0A1C; --surface:#141333; --surface-2:#191741;
+  --line:#2C2A63; --line-soft:#221F50; --field-line:#6764B5;
+
+  --ok:#3DD68C;   --ok-soft:rgba(61,214,140,.14);   --ok-line:rgba(61,214,140,.42);
+  --warn:#E0B252;   --warn-soft:rgba(224,178,82,.14);  --warn-line:rgba(224,178,82,.42);
+  --danger:#FF9086; --danger-soft:rgba(255,144,134,.14); --danger-line:rgba(255,144,134,.42);
+  --on-fill:#0A0A1C;
+
+  --e1:0 1px 2px rgba(0,0,0,.4), 0 6px 18px -8px rgba(0,0,0,.6);
+  --e2:0 2px 4px rgba(0,0,0,.4), 0 18px 40px -16px rgba(0,0,0,.7);
+}
+
+/* ============================================================
+   Compatibility aliases.
+   Declared once: custom properties resolve at use time, so these
+   follow the light/dark overrides above automatically.
+   ============================================================ */
+:root{
+  /* surfaces */
+  --bg:var(--paper);
+  --ground:var(--paper);
+  --card:var(--surface);
+  --raise:var(--surface-2);
+  --soft:var(--surface-2);
+  --surface-3:var(--accent-soft);
+  --line2:var(--line-soft);
+  --line-2:var(--accent-line);
+  --line-strong:var(--accent-line);
+  --stage-frame:var(--line);
+
+  /* text steps */
+  --slate:var(--body);
+  --ink2:var(--body);
+  --ink-2:var(--body);
+  --ink-3:var(--muted);
+  --faint:var(--muted);
+
+  /* brand naming used by the older pages */
+  --navy:var(--ink-950);
+  --navy-2:var(--ink-900);
+  --navy-3:var(--accent-strong);
+  --brand:var(--ink-950);
+  --brand2:var(--accent);
+  --brand-soft:var(--accent-soft);
+  --brand-mid:var(--accent-strong);
+  --teal:var(--accent);
+  --teal-bright:var(--accent-strong);
+  --teal-soft:var(--accent-soft);
+  --teal-ink:var(--accent-strong);
+  --accent-ink:var(--accent-strong);
+
+  /* status naming used by the older pages */
+  --good:var(--ok);       --good-bg:var(--ok-soft);
+  --crit:var(--danger);   --crit-bg:var(--danger-soft);
+  --amber:var(--warn);    --amber-bg:var(--warn-soft);
+  --amber-soft:var(--warn-soft);
+  --success:var(--ok);
+  --pos:var(--ok);        --neg:var(--danger);
+
+  /* code */
+  --code-bg:var(--line-soft);
+  --code-ink:var(--accent-strong);
+
+  /* shape + elevation */
+  --r:var(--r-card);
+  --shadow:var(--e1);
+  --shadow-lift:var(--e2);
+  --shadow-hover:var(--e2);
+  --shadow-btn:0 6px 18px -6px rgba(79,70,229,.55);
+}
+
+/* ============================================================
+   Shared base. Deliberately minimal: pages own their layout.
+   ============================================================ */
+*{box-sizing:border-box}
+
+body{
+  font-family:var(--font-ui);
+  background:var(--paper);
+  color:var(--ink);
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+
+h1,h2,h3,h4,h5,h6,.display{
+  font-family:var(--font-display);
+  letter-spacing:-.022em;
+}
+
+code,kbd,pre,samp,.mono{font-family:var(--font-mono)}
+
+/* figures should never jitter as they update */
+.num,[data-num]{font-variant-numeric:tabular-nums lining-nums}
+
+/* one visible focus treatment across every page */
+:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.01ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.01ms !important;
+    scroll-behavior:auto !important;
+  }
+}

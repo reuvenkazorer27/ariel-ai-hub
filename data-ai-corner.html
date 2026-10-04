@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>פינת DATA&AI</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Cdefs%3E%3ClinearGradient id=%27g%27 x1=%270%27 y1=%270%27 x2=%271%27 y2=%271%27%3E%3Cstop offset=%270%27 stop-color=%27%234F46E5%27/%3E%3Cstop offset=%271%27 stop-color=%27%237C3AED%27/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width=%2732%27 height=%2732%27 rx=%278%27 fill=%27url(%23g)%27/%3E%3Cpath d=%27M9 22 L9 15 M16 22 L16 10 M23 22 L23 13%27 stroke=%27%23fff%27 stroke-width=%273.2%27 stroke-linecap=%27round%27/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;600;700;800&family=Assistant:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="theme.css">
+<style>
+
+
+
+
+
+
+*{box-sizing:border-box}
+body{
+  margin:0; direction:rtl; text-align:right;
+  font-family:var(--font-ui);
+  background:var(--paper); color:var(--ink); line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+
+.hero{
+  position:relative; overflow:hidden;
+  background:
+    radial-gradient(60% 90% at 85% -10%, rgba(124,58,237,.4), transparent 60%),
+    radial-gradient(50% 70% at 8% 0%, rgba(79,70,229,.55), transparent 60%),
+    linear-gradient(180deg,var(--navy),var(--navy-2) 85%);
+  padding:clamp(36px,6vw,56px) clamp(18px,4vw,44px) 40px;
+}
+.hero::after{
+  content:""; position:absolute; inset:0; pointer-events:none; opacity:.5;
+  background-image:
+    linear-gradient(rgba(255,255,255,.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px);
+  background-size:42px 42px;
+  mask-image:radial-gradient(70% 100% at 50% 0%, #000 40%, transparent 90%);
+}
+.hero::before{
+  content:""; position:absolute; inset:0; pointer-events:none; z-index:0; opacity:.5; mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.hero .in{position:relative; z-index:1; max-width:900px}
+@media (prefers-reduced-motion:no-preference){
+  .hero .in{animation:heroIn .8s cubic-bezier(.16,1,.3,1) both}
+}
+@keyframes heroIn{from{opacity:0; transform:translateY(18px); filter:blur(6px)} to{opacity:1; transform:translateY(0); filter:blur(0)}}
+.badge{
+  display:inline-flex; align-items:center; gap:8px; font-family:var(--font-display); font-weight:700;
+  font-size:12px; letter-spacing:.06em; color:#efe9ff; background:rgba(124,58,237,.18);
+  border:1px solid rgba(124,58,237,.45); border-radius:999px; padding:6px 14px; margin:0 0 16px;
+}
+.badge .p{width:7px; height:7px; border-radius:50%; background:var(--teal-bright); box-shadow:0 0 0 3px rgba(124,58,237,.3)}
+.hero h1{
+  font-family:var(--font-display); font-weight:800; font-size:clamp(26px,4.5vw,36px);
+  margin:0 0 12px; color:var(--d-title); letter-spacing:-.02em;
+}
+.hero p{color:var(--d-body); font-size:15px; max-width:64ch; margin:0 0 4px}
+.hero .byline{margin-top:14px; display:flex; align-items:center; gap:10px; color:var(--d-body); font-size:13.5px}
+.hero .avatar{
+  width:30px; height:30px; border-radius:50%; background:var(--teal); color:var(--accent-on);
+  display:grid; place-items:center; font-family:var(--font-display); font-weight:800; font-size:13px; flex:none;
+}
+
+.wrap{max-width:900px; margin:0 auto; padding:36px clamp(18px,4vw,32px) 80px}
+
+.week{position:relative; padding-inline-end:0; margin-bottom:28px}
+.week-head{display:flex; align-items:center; gap:12px; margin-bottom:14px}
+.week-date{
+  font-family:var(--font-display); font-weight:800; font-size:15px; color:var(--navy-3);
+  background:var(--teal-soft); border-radius:10px; padding:6px 14px; white-space:nowrap;
+}
+:root[data-theme="dark"] .week-date{color:var(--teal-ink)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .week-date{color:var(--teal-ink)}}
+.week-rule{flex:1; height:1px; background:var(--line)}
+
+.entries{display:flex; flex-direction:column; gap:12px}
+.entry{
+  display:flex; gap:14px; background:var(--card); border:1px solid var(--line);
+  border-radius:14px; padding:16px 18px; box-shadow:var(--shadow);
+}
+.entry .eic{
+  width:38px; height:38px; border-radius:11px; flex:none; font-size:18px;
+  display:grid; place-items:center; background:var(--teal-soft);
+}
+.entry.cc .eic{background:var(--line-soft)}
+.entry.other .eic{background:var(--amber-soft)}
+.entry .ebody{flex:1; min-width:0}
+.entry .etag{
+  display:inline-block; font-family:var(--font-display); font-weight:700; font-size:11px;
+  letter-spacing:.04em; color:var(--teal-ink); margin-bottom:4px;
+}
+.entry.cc .etag{color:var(--navy-3)}
+.entry.other .etag{color:var(--amber)}
+.entry h3{font-family:var(--font-display); font-weight:700; font-size:15.5px; margin:0 0 6px; color:var(--ink)}
+.entry p{margin:0 0 10px; font-size:14px; color:var(--slate)}
+.entry pre{
+  background:var(--line-soft); border:1px solid var(--line); border-radius:8px;
+  padding:12px 14px; margin:0 0 10px; overflow-x:auto; direction:ltr; text-align:left;
+}
+.entry pre code{font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:12.5px; line-height:1.6; color:var(--ink)}
+.entry a.lnk{
+  display:inline-flex; align-items:center; gap:6px; font-family:var(--font-display); font-weight:700;
+  font-size:13px; color:var(--teal-ink); text-decoration:none; border-bottom:1px solid transparent;
+}
+.entry a.lnk:hover{border-color:var(--teal-ink)}
+
+footer{max-width:900px; margin:0 auto; padding:0 clamp(18px,4vw,32px) 50px; color:var(--faint); font-size:13px}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="in">
+    <span class="badge"><span class="p"></span> עדכון שבועי</span>
+    <h1>ארכיון פינת ה-DATA&AI</h1>
+    <p>כל עדכון שבועי ששותף בקבוצה — כלים, טיפים וחידושים בעולמות ה-Power BI וה-AI, מרוכזים במקום אחד לפי תאריך.</p>
+    <div class="byline"><span class="avatar">רק</span> ראובן קזורר · מתעדכן מדי יום רביעי</div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="week">
+    <div class="week-head"><span class="week-date">23.9</span><span class="week-rule"></span></div>
+    <div class="entries">
+      <div class="entry">
+        <div class="eic">📊</div>
+        <div class="ebody">
+          <span class="etag">POWER BI</span>
+          <h3>שליטה בהקפאת כותרות השורות ב-Matrix</h3>
+          <p>עד עכשיו כותרות השורות ב-Matrix תמיד נשארו מוקפאות בגלילה אופקית, ולא היה אפשר לקבוע אחרת. מעדכון אוגוסט 2026 יש מתג חדש ב-Format pane תחת Layout &gt; Freeze &gt; Row headers, שקובע אם הכותרות נשארות במקום או נגללות עם הנתונים. ההגדרה נשמרת בדוח וחלה על כל מי שצופה בו, והצופים עדיין יכולים לשנות אותה זמנית בקליק ימני. הטריק השימושי: אפשר להגדיר אותה אחרת ב-Mobile layout, למשל לבטל הקפאה בטלפון כדי לפנות מקום לנתונים, ולהשאיר מוקפא בדסקטופ.</p>
+          <a class="lnk" href="https://youtube.com/shorts/VX0hCOZ7Aiw" target="_blank" rel="noopener">🎥 סרטון קצר ↗</a>
+        </div>
+      </div>
+      <div class="entry cc">
+        <div class="eic">🤖</div>
+        <div class="ebody">
+          <span class="etag">CLAUDE</span>
+          <h3>Claude Opus 5.5 יצא</h3>
+          <p>Anthropic השיקו את Claude Opus 5.5, המודל המוביל החדש שלהם: חזק משמעותית מ-Opus 5, זול בכ-40% בשימוש רגיל ומהיר ביותר מ-30%. הוא גם ברירת המחדל החדשה ב-Claude Code (דורש גרסה 2.1.280), ומכסות השימוש במנויי Pro, Max ו-Team עלו.</p>
+          <a class="lnk" href="https://www.anthropic.com/claude-opus-5-5" target="_blank" rel="noopener">🔗 anthropic.com ↗</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="week">
+    <div class="week-head"><span class="week-date">16.9</span><span class="week-rule"></span></div>
+    <div class="entries">
+      <div class="entry other">
+        <div class="eic">💻</div>
+        <div class="ebody">
+          <span class="etag">GEMINI</span>
+          <h3>Gemini הגיע ל-Windows</h3>
+          <p>גוגל השיקה אפליקציית Gemini ייעודית ל-Windows 10 ו-11.</p>
+          <a class="lnk" href="https://blog.google/innovation-and-ai/products/gemini-app/gemini-app-now-on-windows/" target="_blank" rel="noopener">🔗 blog.google ↗</a>
+        </div>
+      </div>
+      <div class="entry cc">
+        <div class="eic">📚</div>
+        <div class="ebody">
+          <span class="etag">CLAUDE CODE</span>
+          <h3>ספריית הפרומפטים הרשמית של Claude Code</h3>
+          <p>בתיעוד הרשמי יש עכשיו עמוד Prompt library: אוסף פרומפטים מוכנים להעתקה, מסודרים לפי סוג משימה ותפקיד. הערך הכפול: לכל פרומפט מצורף הסבר בשם "Why this works" שמפרק את הדפוס שמאחוריו — כך שלא רק מעתיקים, אלא גם לומדים לכתוב פרומפטים טובים יותר.</p>
+          <a class="lnk" href="https://code.claude.com/docs/en/prompt-library" target="_blank" rel="noopener">🔗 code.claude.com/docs ↗</a>
+        </div>
+      </div>
+      <div class="entry">
+        <div class="eic">🛡️</div>
+        <div class="ebody">
+          <span class="etag">POWER BI</span>
+          <h3>החידוש המעניין: המודל מגן על עצמו ממספרים מטעים</h3>
+          <p><strong>הבעיה:</strong> בכל מודל יש טבלאות שאין ביניהן Relationship — למשל טבלת תקציב מול טבלת מכירות. אם בונה הדוח גורר לטבלה אחת את עמודת החנות מהתקציב ואת מדד המכירות, Power BI לא מתריע. הוא פשוט מציג את סך כל המכירות בכל שורה, שוב ושוב — נכון חשבונית, אבל מטעה.</p>
+          <p><strong>הפתרון:</strong> Calculation Group עם noSelectionExpression שרץ אוטומטית על כל מדד. בודק אם המדד והעמודה שעל הציר שייכים לאותו עולם (ISSELECTEDMEASURE + ISINSCOPE) — ואם לא, מחזיר "###" במקום מספר מטעה. ב-Total השורה כבר לא ב-scope, אז המדד מוצג כרגיל.</p>
+          <pre><code>VAR IsSalesMeasure =
+    ISSELECTEDMEASURE ( [Revenue], [Qty Sold], [Orders] )
+VAR BudgetColumnInScope =
+    ISINSCOPE ( 'Store Budgets'[Store] )
+        || ISINSCOPE ( 'Store Budgets'[Month] )
+RETURN
+IF (
+    IsSalesMeasure && BudgetColumnInScope,
+    "###",
+    SELECTEDMEASURE ()
+)</code></pre>
+          <a class="lnk" href="https://www.datazoe.blog/post/semantic-model-tricks-show-when-measures-don-t-have-a-relationship-to-the-column-you-are-showing-it" target="_blank" rel="noopener">🔗 datazoe.blog ↗</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="week">
+    <div class="week-head"><span class="week-date">9.9</span><span class="week-rule"></span></div>
+    <div class="entries">
+      <div class="entry">
+        <div class="eic">✨</div>
+        <div class="ebody">
+          <span class="etag">POWER BI</span>
+          <h3>מיקרו-ויז'ואלים בתוך טבלה, בלי ויז'ואל מותאם</h3>
+          <p>טבלה רגילה, ובעמודה האחרונה שלה גלולת סטטוס צבעונית (נקודה + אחוז) שמשתנה משורה לשורה לפי הנתון — בלי להתקין שום Custom Visual.</p>
+          <p><strong>שלב 1</strong> — מדד שמחזיר מחרוזת SVG (טקסט שמצייר תמונה), עם צבע וערך מחושבים מנתוני השורה:</p>
+          <pre><code>StatusPill =
+VAR pct = [שינוי אחוז]
+VAR c = IF ( pct >= 0.03, "green", IF ( pct <= -0.05, "red", "orange" ) )
+RETURN
+    "data:image/svg+xml;utf8,"
+        & "&lt;svg xmlns='http://www.w3.org/2000/svg' width='100' height='24'&gt;"
+        & "&lt;circle cx='10' cy='12' r='6' fill='" & c & "'/&gt;"
+        & "&lt;text x='22' y='16' font-size='12'&gt;" & FORMAT ( pct, "0.0%" ) & "&lt;/text&gt;&lt;/svg&gt;"</code></pre>
+          <p><strong>שלב 2</strong> — בוחרים את המדד וב-Data category מסמנים Image URL (בלי זה יוצג טקסט גולמי). <strong>שלב 3</strong> — גוררים למטריקס/טבלה כמו שדה רגיל.</p>
+          <p>מה אפשר לצייר ככה: sparklines, פסי התקדמות, נוריות סטטוס, כרטיסי KPI — הכול בתוך שורת הטבלה. לתחזוקה נוחה: תבנית SVG אחת עם פרמטרים, או חבילת <code>DaxLib.SVG</code> המתקינה פונקציות מוכנות דרך TMDL view.</p>
+          <a class="lnk" href="https://www.excelized.de/post/svg-in-power-bi-visuals-how-to-build-them-and-maintain-them-without-pain" target="_blank" rel="noopener">🔗 מדריך מלא ↗</a>
+          &nbsp;&nbsp;
+          <a class="lnk" href="https://daxlib.org/package/DaxLib.SVG/" target="_blank" rel="noopener">🔗 DaxLib.SVG ↗</a>
+        </div>
+      </div>
+      <div class="entry cc">
+        <div class="eic">🩺</div>
+        <div class="ebody">
+          <span class="etag">CLAUDE CODE</span>
+          <h3>רופא הסקילים — skill-doctor</h3>
+          <p>מי שהתחיל לאסוף סקילים, או לבנות אותם לצוות — בגרסה החדשה יש פקודת <code>skill-doctor</code> שבודקת אילו סקילים באמת עוזרים ואילו רק שורפים context בכל שיחה בלי להוסיף ערך. סקיל מיותר שווה פחות מקום בחלון ההקשר למה שחשוב. הפעולה: מריצים <code>skill-doctor</code>, מקבלים רשימה מדורגת, ומנקים. חדש מגרסה 2.1.261.</p>
+          <a class="lnk" href="https://startdebugging.net/2026/09/claude-code-2-1-261-skill-doctor-finds-skills-that-only-cost-context/" target="_blank" rel="noopener">🔗 startdebugging.net ↗</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="week">
+    <div class="week-head"><span class="week-date">2.9</span><span class="week-rule"></span></div>
+    <div class="entries">
+      <div class="entry cc">
+        <div class="eic">🧠</div>
+        <div class="ebody">
+          <span class="etag">CLAUDE</span>
+          <h3>Claude Memory בכל מקום</h3>
+          <p>הזיכרון של Claude עובד עכשיו גם ב-Chat וגם ב-Cowork. הוא יכול לזכור הקשר, העדפות ונושאים מהשיחות הקודמות, כך שלא צריך להסביר הכול מחדש. והכי חשוב — אפשר לראות, לערוך ולמחוק את מה שהוא זוכר.</p>
+        </div>
+      </div>
+      <div class="entry">
+        <div class="eic">📧</div>
+        <div class="ebody">
+          <span class="etag">POWER BI</span>
+          <h3>כפתור מייל בדשבורד</h3>
+          <p>אפשר להוסיף לדשבורד כפתור מייל שמאפשר למנהל לפנות ישירות מתוך הדוח, בעזרת מדד DAX שבונה מייל מובנה בלחיצת כפתור — נמען, נושא ותוכן — לפי הנתונים והביצועים שמופיעים בדשבורד.</p>
+          <a class="lnk" href="https://www.youtube.com/watch?v=hILi8E6BmCI" target="_blank" rel="noopener">🎥 דוגמה קצרה ↗</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="week">
+    <div class="week-head"><span class="week-date">26.8</span><span class="week-rule"></span></div>
+    <div class="entries">
+      <div class="entry">
+        <div class="eic">⚡</div>
+        <div class="ebody">
+          <span class="etag">POWER BI</span>
+          <h3>פיתוח PBIP הופך למהיר יותר</h3>
+          <p><strong>Apply external changes</strong> — Power BI Desktop מזהה שינויים שבוצעו בקבצי ה-PBIP על הדיסק ומאפשר להחיל אותם ישירות, בלי לסגור ולפתוח מחדש. <strong>אינטגרציה עם VS Code</strong> — אפשר לפתוח את פרויקט ה-PBIP ישירות ב-VS Code מתוך Power BI Desktop. למי שעובד עם PBIP, Git ו-Source Control — שיפור קטן שחוסך זמן ביום-יום.</p>
+        </div>
+      </div>
+      <div class="entry cc">
+        <div class="eic">🎨</div>
+        <div class="ebody">
+          <span class="etag">CLAUDE CODE</span>
+          <h3>Claude Code יודע עכשיו גם לעצב</h3>
+          <p>פקודה חדשה: <code>/design</code>. פותחת סביבת עבודה עם Artboards שבה Claude מייצר כמה כיווני עיצוב, אפשר לבחור ולשנות אותם — ואז לבקש ממנו להפוך את העיצוב לקוד. כלומר: רעיון → עיצוב → קוד, בתוך אותו תהליך. כרגע ב-Research Preview וזמין למנויי Pro, Max, Team ו-Enterprise.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="week">
+    <div class="week-head"><span class="week-date">12.8</span><span class="week-rule"></span></div>
+    <div class="entries">
+      <div class="entry">
+        <div class="eic">🧩</div>
+        <div class="ebody">
+          <span class="etag">POWER BI</span>
+          <h3>HTML Content — ויזואל מותאם אישית</h3>
+          <p>ויזואל (Custom Visual) המאפשר להציג תוכן HTML/CSS גולמי ישירות בתוך דוח, במקום להסתפק בטבלאות וגרפים סטנדרטיים. הרעיון: מדד DAX שמחזיר מחרוזת קוד HTML (טבלאות מעוצבות, badges צבעוניים, אייקונים), והוויזואל "מרנדר" את זה כמו דפדפן — גמישות עיצובית עצומה ושליטה מלאה בפריסה ובמיתוג של הדוח.</p>
+          <a class="lnk" href="https://youtu.be/9MkwbP7-x6k" target="_blank" rel="noopener">🎥 מדריך מעשי ↗</a>
+        </div>
+      </div>
+      <div class="entry cc">
+        <div class="eic">💬</div>
+        <div class="ebody">
+          <span class="etag">CLAUDE CODE</span>
+          <h3>סשנים שיודעים לדבר אחד עם השני</h3>
+          <p>שדרוג משמעותי: הסשנים יכולים מעכשיו לדבר אחד עם השני. במקום להסביר את אותו דבר פעמיים כשעוברים לחלון חדש, פשוט מבקשים מקלוד להעביר תקציר לסשן האחר כדי להמשיך את המשימה מהנקודה שבה עצרתם. עובד גם הפוך, וקלוד אף יודע לעדכן סשן במקביל בעצמו אם ביצע שינוי שמשפיע על העבודה (זמין ב-macOS ולינוקס).</p>
+          <a class="lnk" href="https://youtu.be/YJuFD9azBlI" target="_blank" rel="noopener">🎥 סרטון ↗</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>ארכיון פינת ה-DATA&AI — מרוכז אוטומטית מעדכונים שבועיים.</footer>
+
+</body>
+</html>

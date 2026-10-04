@@ -1,0 +1,405 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>מדריך התקנה — סורק סקירת דוחות Power BI</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Cdefs%3E%3ClinearGradient id=%27g%27 x1=%270%27 y1=%270%27 x2=%271%27 y2=%271%27%3E%3Cstop offset=%270%27 stop-color=%27%234F46E5%27/%3E%3Cstop offset=%271%27 stop-color=%27%237C3AED%27/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width=%2732%27 height=%2732%27 rx=%278%27 fill=%27url(%23g)%27/%3E%3Cpath d=%27M9 22 L9 15 M16 22 L16 10 M23 22 L23 13%27 stroke=%27%23fff%27 stroke-width=%273.2%27 stroke-linecap=%27round%27/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;600;700;800&family=Assistant:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="theme.css">
+<style>
+
+  
+  
+  
+
+  *{box-sizing:border-box}
+  html{direction:rtl; scroll-behavior:smooth}
+  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} }
+  body{
+    background:var(--bg); color:var(--ink); direction:rtl;
+    font-family:var(--font-ui);
+    font-size:16px; line-height:1.7; margin:0;
+    -webkit-font-smoothing:antialiased;
+  }
+  .page{direction:rtl; text-align:right; max-width:72ch; margin:0 auto; padding:72px 28px 96px}
+  @media (prefers-reduced-motion:no-preference){
+    .page > *:nth-child(-n+3){animation:pageIn .6s cubic-bezier(.16,1,.3,1) both}
+    .page > *:nth-child(1){animation-delay:0s} .page > *:nth-child(2){animation-delay:.05s} .page > *:nth-child(3){animation-delay:.1s}
+  }
+  @keyframes pageIn{from{opacity:0; transform:translateY(14px)} to{opacity:1; transform:translateY(0)}}
+  @media (max-width:640px){ .page{padding:44px 20px 72px} }
+
+  .eyebrow{
+    font-family:var(--font-display); font-size:12px; font-weight:700; letter-spacing:.09em;
+    color:var(--accent-ink); margin:0 0 14px;
+  }
+  h1{
+    font-family:var(--font-display); font-size:clamp(30px,5.5vw,42px); line-height:1.18; font-weight:800;
+    letter-spacing:-.02em; text-wrap:balance; margin:0 0 16px;
+  }
+  .lede{font-size:18px; color:var(--muted); text-wrap:balance; margin:0 0 8px}
+  .rule{height:1px; background:var(--line); border:0; margin:40px 0}
+
+  h2{
+    font-family:var(--font-display); font-size:22px; font-weight:700; letter-spacing:-.012em;
+    text-wrap:balance; margin:56px 0 6px;
+  }
+  h2:first-of-type{margin-top:44px}
+  h3{font-family:var(--font-display); font-size:16px; font-weight:700; margin:28px 0 6px}
+  p{margin:0 0 14px}
+  strong{font-weight:640}
+  a{color:var(--accent-ink); text-decoration-thickness:1px; text-underline-offset:2px}
+  a:focus-visible,summary:focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:3px}
+
+  .part{
+    display:inline-block; font-size:11.5px; font-weight:660; letter-spacing:.08em;
+    color:var(--accent-ink); background:var(--accent-soft);
+    padding:3px 10px; border-radius:100px; margin:56px 0 0;
+  }
+  .part + h2{margin-top:10px}
+
+  code{
+    font-family:ui-monospace,"Cascadia Code",Consolas,monospace;
+    font-size:.87em; background:var(--code-bg); color:var(--code-ink);
+    padding:.12em .38em; border-radius:4px;
+    direction:ltr; unicode-bidi:embed; display:inline-block;
+    text-align:left;
+  }
+  pre{
+    background:var(--code-bg); color:var(--code-ink);
+    border:1px solid var(--line); border-radius:10px;
+    padding:16px 18px; margin:0 0 16px;
+    overflow-x:auto; direction:ltr; text-align:left;
+  }
+  pre code{background:none; padding:0; font-size:13px; line-height:1.6; display:block}
+  .cap{
+    font-size:12.5px; color:var(--faint); margin:-8px 0 20px;
+    display:flex; gap:6px; align-items:baseline;
+  }
+
+  ol.steps{list-style:none; counter-reset:s; padding:0; margin:0}
+  ol.steps > li{
+    counter-increment:s; position:relative;
+    padding:0 46px 4px 0; margin:0 0 34px;
+  }
+  ol.steps > li::before{
+    content:counter(s); position:absolute; right:0; top:1px;
+    width:30px; height:30px; border-radius:50%;
+    background:var(--accent-soft); color:var(--accent-ink);
+    font-size:14px; font-weight:660; font-variant-numeric:tabular-nums;
+    display:flex; align-items:center; justify-content:center;
+  }
+  ol.steps > li > h3{margin-top:2px}
+
+  ul,ol.plain{padding:0 20px 0 0; margin:0 0 14px}
+  li{margin-bottom:7px}
+
+  .note{
+    border-radius:10px; padding:14px 16px; margin:0 0 18px;
+    border:1px solid var(--line); background:var(--surface); font-size:15px;
+  }
+  .note > :last-child{margin-bottom:0}
+  .note.warn{border-color:var(--warn); background:var(--warn-soft)}
+  .note.ok{border-color:var(--ok); background:var(--ok-soft)}
+  .note .tag{
+    display:block; font-size:12px; font-weight:660; letter-spacing:.05em;
+    margin-bottom:5px;
+  }
+  .note.warn .tag{color:var(--warn)}
+  .note.ok .tag{color:var(--ok)}
+
+  .tbl{overflow-x:auto; margin:0 0 18px; border:1px solid var(--line); border-radius:10px}
+  table{border-collapse:collapse; width:100%; font-size:14.5px; background:var(--surface)}
+  th,td{text-align:right; padding:11px 14px; border-bottom:1px solid var(--line); vertical-align:top}
+  th{background:var(--raise); font-weight:640; font-size:13px; color:var(--muted)}
+  tr:last-child td{border-bottom:0}
+  td code{font-size:12.5px}
+
+  details{
+    border:1px solid var(--line); border-radius:10px;
+    padding:0 16px; margin:0 0 18px; background:var(--surface);
+  }
+  summary{cursor:pointer; font-weight:600; padding:13px 0; font-size:15px; list-style-position:inside}
+  details[open] summary{border-bottom:1px solid var(--line); margin-bottom:14px}
+  details > :last-child{margin-bottom:14px}
+
+  .dlcard{
+    display:flex; align-items:center; gap:16px; flex-wrap:wrap;
+    border:1px solid var(--line); background:var(--surface); border-radius:14px;
+    padding:18px 20px; margin:0 0 24px;
+  }
+  .dlcard .dlic{
+    width:44px; height:44px; border-radius:12px; background:var(--accent-soft);
+    color:var(--accent-ink); display:grid; place-items:center; font-size:20px; flex:none;
+  }
+  .dlcard .dltxt{flex:1; min-width:200px}
+  .dlcard .dltxt b{display:block; font-family:var(--font-display); font-weight:700; font-size:15px}
+  .dlcard .dltxt span{color:var(--faint); font-size:13px}
+  .dlcard a.btn{
+    font-family:var(--font-display); font-weight:700; font-size:14px; text-decoration:none;
+    background:var(--accent); color:var(--accent-on); border-radius:10px; padding:10px 18px; white-space:nowrap;
+    box-shadow:0 4px 14px 0 rgba(79,70,229,.32);
+  }
+
+  footer{
+    margin-top:64px; padding-top:22px; border-top:1px solid var(--line);
+    font-size:13.5px; color:var(--faint);
+  }
+
+  .quicknav{display:flex; flex-wrap:wrap; gap:8px; margin:0 0 28px}
+  .quicknav a{
+    font-family:var(--font-display); font-weight:700; font-size:12.5px;
+    color:var(--accent-ink); background:var(--accent-soft); border:1px solid transparent;
+    border-radius:999px; padding:6px 14px; text-decoration:none; transition:.15s;
+  }
+  .quicknav a:hover{border-color:var(--accent)}
+  .quicknav a:active{transform:scale(.96)}
+  .quicknav a:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+</style>
+
+<div class="page">
+
+  <p class="eyebrow">מדריך התקנה · Claude Code / Cowork · Plugin</p>
+  <h1>Skill סקירת דוחות Power BI</h1>
+  <p class="lede">חבילת <strong>plugin</strong> ל-Claude Cowork / Claude Code שסוקרת דוחות <strong>Power BI (PBIP/PBIR)</strong> ומחזירה דוח ביקורת מסודר בעברית — ממצאים לפי חומרה, ויזואלים מומלצים מקטלוג, המלצות ניווט וצבע, ומנוע BPA דטרמיניסטי עם מעל 100 כללים.</p>
+
+  <div class="dlcard">
+    <div class="dlic">📦</div>
+    <div class="dltxt">
+      <b>powerbi-report-reviewer-scanner.zip</b>
+      <span>חבילת ה-plugin המלאה — להורדה והתקנה מקומית</span>
+    </div>
+    <a class="btn" href="powerbi-report-reviewer-scanner.zip" download>⬇ הורדת הקובץ</a>
+  </div>
+
+  <div class="note warn">
+    <span class="tag">גרסת main — סורק בלבד</span>
+    <p>ברנץ' זה מכיל את <strong>הסורק</strong> (דוח ביקורת קריא-בלבד) בלבד. הבונה האג'נטי (<code>powerbi-pbip-builder</code>) שמיישם תיקונים בפועל נמצא בברנץ' <code>full-agent</code>.</p>
+  </div>
+
+  <nav class="quicknav" aria-label="ניווט מהיר במדריך">
+    <a href="#what">מה זה נותן</a>
+    <a href="#choose">איזה מסלול שלי</a>
+    <a href="#path-a">מסלול א׳</a>
+    <a href="#path-b">מסלול ב׳</a>
+    <a href="#path-c">מסלול ג׳</a>
+    <a href="#start">אחרי ההתקנה</a>
+    <a href="#trouble">פתרון תקלות</a>
+  </nav>
+
+  <h2 id="what">מה זה נותן</h2>
+  <p>שני skills משלימים ארוזים יחד בחבילה:</p>
+  <div class="tbl">
+    <table>
+      <thead><tr><th>Skill</th><th>תפקיד</th></tr></thead>
+      <tbody>
+        <tr><td><code>powerbi-report-reviewer</code></td><td>סוקר דוח Power BI קיים ומחזיר דוח ביקורת בעברית (קריא-בלבד). שואל "דוח מתקדם או רגיל?" בתחילת הסשן — הרמה קובעת את אורך הדוח, לא את עומק הבדיקה. כולל אימות מבנה (<code>pbi_validate.py</code>, בלי Desktop) ומנוע BPA דטרמיניסטי (<code>pbi_check.py</code>).</td></tr>
+        <tr><td><code>powerbi-design-search</code></td><td>מנוע חיפוש BM25 (Python, ללא תלויות) על 8 מאגרי ידע עיצובי: פלטות צבע, סוגי גרפים עם <code>visualType</code>, תבניות DAX, פריסות עם מיקומי פיקסלים, תבניות PBIR JSON, סגנונות פורמט, כרטיסי KPI והנחיות UX.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>הסוקר קורא את קבצי הפרויקט (דפים, ויזואלים, theme, לוגו, מדדי DAX) ומפיק הערכה כללית, מה עובד טוב, ממצאים לפי חומרה (🔴/🟡/🟢), ויזואלים מומלצים מקטלוג בן 44 פריטים, המלצות תפריט צד/ניווט, בדיקת לוגו מחלקה/אוניברסיטה, אייקונים ל-KPI, ערכת צבעים עם theme JSON, המלצות HTML Content (RTL) עם מדד DAX מוכן, ובדיקת כותרות ברורות — לצד ציון בריאות שניתן להשוות בין ביקורות.</p>
+
+  <h2 id="choose">איזה מסלול שלי? (בוחרים אחד)</h2>
+  <p>ההתקנה תלויה במה שהארגון מאפשר. אתרו את השורה שמתארת את המצב שלכם:</p>
+  <div class="tbl">
+    <table>
+      <thead><tr><th>המצב בארגון</th><th>המסלול</th><th>מה עושים</th></tr></thead>
+      <tbody>
+        <tr><td>אפשר לטעון תוספים / skills</td><td><a href="#path-a"><strong>מסלול א׳</strong></a></td><td>התקנה כ-plugin. הכי נוח.</td></tr>
+        <tr><td>skills נטענים אבל <code>/plugin</code> חסום</td><td><a href="#path-b"><strong>מסלול ב׳</strong></a></td><td>התקנה ידנית בהעתקת תיקייה, בלי שום פקודה.</td></tr>
+        <tr><td>skills חסומים לגמרי</td><td><a href="#path-c"><strong>מסלול ג׳</strong></a></td><td>בלי התקנה, דרך <code>CLAUDE.md</code> — עומק מלא.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note">
+    <span class="tag">לא בטוחים?</span>
+    <p>נסו מסלול א׳. אם <code>/plugin</code> לא עובד — עברו למסלול ב׳. אם גם skills לא נטענים בכלל — מסלול ג׳, שתמיד עובד.</p>
+  </div>
+
+  <p class="part" id="path-a">מסלול א׳</p>
+  <h2>התקנה כ-plugin</h2>
+  <p>כשהארגון מאפשר תוספים. ב-Cowork זו גרירה אחת; ב-Claude Code זו פקודת <code>/plugin</code>.</p>
+
+  <ol class="steps">
+    <li>
+      <h3>Cowork (דסקטופ) — הדרך הקצרה</h3>
+      <p>גררו את קובץ ה-<code>.plugin</code> לצ'אט בדסקטופ ואשרו בכפתור ההתקנה. אם זה עבד — דלגו ישר אל <a href="#start">אחרי ההתקנה</a>.</p>
+    </li>
+
+    <li>
+      <h3>חילוץ ה-ZIP למקום קבוע</h3>
+      <p>קליק ימני על הקובץ שהורדתם ← <strong>Extract All</strong>, למקום שלא יזוז, למשל:</p>
+<pre dir="ltr"><code>C:\Users\User\claude-plugins\powerbi-marketplace</code></pre>
+      <div class="note ok">
+        <span class="tag">✅ בדיקה</span>
+        <p>בתוך התיקייה שחולצה יש תיקייה <code>.claude-plugin</code> ובתוכה <code>marketplace.json</code>.</p>
+      </div>
+    </li>
+
+    <li>
+      <h3>הוספת המרקטפלייס ב-Claude Code</h3>
+<pre dir="ltr"><code>/plugin marketplace add C:\Users\User\claude-plugins\powerbi-marketplace</code></pre>
+      <div class="note">
+        <span class="tag">שימו לב</span>
+        <p>מקלידים ב-<strong>Claude Code</strong>, לא בצ'אט הרגיל — רק שם <code>/plugin</code> עובד.</p>
+      </div>
+    </li>
+
+    <li>
+      <h3>התקנה</h3>
+<pre dir="ltr"><code>/plugin install powerbi-report-reviewer@local-powerbi</code></pre>
+      <p>אשרו אם מופיעה בקשה. לחלופין: הקלידו <code>/plugin</code> ← Browse marketplaces ← local-powerbi ← Install.</p>
+    </li>
+  </ol>
+
+  <div class="note ok">
+    <span class="tag">🎉 מותקן</span>
+    <p>המשיכו אל <a href="#start">אחרי ההתקנה — איך מתחילים לעבוד</a>.</p>
+  </div>
+
+  <p class="part" id="path-b">מסלול ב׳</p>
+  <h2>התקנה ידנית — העתקת תיקייה</h2>
+  <p>כש-skills נטענים אבל <code>/plugin</code> חסום. בלי שום פקודה.</p>
+
+  <ol class="steps">
+    <li>
+      <h3>חילוץ ה-ZIP</h3>
+      <p>קליק ימני ← <strong>Extract All</strong>. מקבלים תיקייה בשם <code>powerbi-report-reviewer</code> — זו התיקייה שנעתיק.</p>
+    </li>
+
+    <li>
+      <h3>איתור תיקיית התוספים</h3>
+<pre dir="ltr"><code>C:\Users\User\.claude\plugins</code></pre>
+      <div class="note">
+        <span class="tag">איך מגיעים לשם</span>
+        <p>הדביקו את הנתיב בשורת הכתובת של סייר הקבצים ולחצו Enter. אם <code>plugins</code> חסרה — צרו אותה. תיקיית <code>.claude</code> מוסתרת: View ← Show ← Hidden items.</p>
+      </div>
+      <div class="note warn">
+        <span class="tag">⚠️ שימו לב</span>
+        <p>אם הארגון הגדיר תיקיית תוספים אחרת — השתמשו בזו שהם נתנו.</p>
+      </div>
+    </li>
+
+    <li>
+      <h3>העתקה, הדבקה והפעלה מחדש</h3>
+      <p>העתיקו את התיקייה <code>powerbi-report-reviewer</code> אל תיקיית היעד. המבנה הסופי חייב להיות:</p>
+<pre dir="ltr"><code>...\.claude\plugins\powerbi-report-reviewer\
+   ├─ .claude-plugin\plugin.json    &lt;- חייב להיות שם
+   └─ skills\
+        ├─ powerbi-report-reviewer\
+        └─ powerbi-design-search\</code></pre>
+      <p>סגרו את Claude Code ופתחו מחדש.</p>
+      <div class="note ok">
+        <span class="tag">✅ בדיקה</span>
+        <p>מופיעים שני הכלים: הסוקר וחיפוש העיצוב.</p>
+      </div>
+    </li>
+  </ol>
+
+  <p class="part" id="path-c">מסלול ג׳</p>
+  <h2>אין skills? בלי התקנה, דרך CLAUDE.md</h2>
+  <p>כשהארגון חוסם skills לגמרי. <strong>כל הכלים נשמרים בעומק מלא</strong> — מגדירים פעם אחת, ואז זה עובד בכל פרויקט. <code>CLAUDE.md</code> נטען אוטומטית כ"זיכרון פרויקט" ואינו skill, ולכן עובד גם כששאר המנגנונים חסומים.</p>
+
+  <ol class="steps">
+    <li>
+      <h3>חילוץ ה-ZIP ושמירת תיקיית הכלים במקום קבוע</h3>
+      <p>בתוך ה-ZIP יש שני דברים שרלוונטיים כאן: התיקייה <code>powerbi-report-reviewer</code> (עם <code>skills\</code>) והקובץ <code>CLAUDE.example.md</code>. העתיקו את התיקייה למקום אחד קבוע, למשל:</p>
+<pre dir="ltr"><code>C:\Users\User\powerbi-toolkit\powerbi-report-reviewer</code></pre>
+    </li>
+
+    <li>
+      <h3>הצבת CLAUDE.md בתיקיית הפרויקט</h3>
+      <p>העתיקו את <code>CLAUDE.example.md</code> לשורש תיקיית פרויקט ה-Power BI, <strong>שנו את שמו ל-<code>CLAUDE.md</code></strong>, ועדכנו בתוכו את שורת ה-<strong>TOOLKIT</strong> לנתיב שבחרתם בשלב 1.</p>
+      <div class="note warn">
+        <span class="tag">⚠️ אל תדביקו את תוכן הקובץ לצ'אט</span>
+        <p>הודעה שמתחילה ב-<code>#</code> מפעילה ב-Claude Code את פקודת הזיכרון. יוצרים ועורכים את הקובץ בסייר הקבצים או בעורך טקסט — לא בצ'אט.</p>
+      </div>
+      <div class="note">
+        <span class="tag">מה זה עושה</span>
+        <p><code>CLAUDE.md</code> אומר ל-Claude: "קרא את הקבצים תחת TOOLKIT ופעל לפיהם" — כך הוא משתמש בכל ה-references, ה-DAX, הקטלוג וה-CSV, בדיוק כמו skill מלא.</p>
+      </div>
+    </li>
+
+    <li>
+      <h3>פשוט מבקשים</h3>
+      <p>פתחו את הפרויקט ב-Claude Code וכתבו "בקר לי את הדוח". Claude יקרא את הכלים המלאים מהתיקייה ויפעל לפיהם.</p>
+      <div class="note ok">
+        <span class="tag">✅ התוצאה</span>
+        <p>אותו עומק כמו התקנת plugin — בלי להתקין skills.</p>
+      </div>
+    </li>
+  </ol>
+
+  <h2 id="start">אחרי ההתקנה — איך מתחילים לעבוד</h2>
+  <p>בכל שלושת המסלולים, אחרי ההתקנה צריך לפתוח סשן ב-Claude Code <strong>על תיקיית הפרויקט של הדוח</strong>. הדוח חייב להיות כבר <strong>מפורק לפורמט PBIP</strong> — תיקייה עם קובץ <code>.pbip</code>, תיקיית <code>.Report</code> ותיקיית <code>.SemanticModel</code> — ולא קובץ <code>.pbix</code> בודד.</p>
+
+  <div class="note">
+    <span class="tag">אין לכם PBIP?</span>
+    <p>ב-Power BI Desktop: File ← Save as ← שמירה כ-<strong>Power BI project (.pbip)</strong>. זה מפרק את הדוח לקבצי טקסט שהכלי יודע לקרוא.</p>
+  </div>
+
+  <p>פתחו את <strong>תיקיית הפרויקט</strong> ב-Claude Code (Open folder), ואז כתבו:</p>
+<pre dir="ltr"><code>בקר לי את הדוח ותן סיכום ביקורת</code></pre>
+  <p class="cap">פניות חלופיות: "עבור על הדוח ותן סיכום ביקורת" · "בקר לי את ה-PBIP" · "מה חסר בדשבורד"</p>
+
+  <div class="note ok">
+    <span class="tag">✅ מה קורה אז</span>
+    <p>הכלי ישאל אם מדובר בדוח רגיל או מתקדם (רגיל ~10 דקות, מתקדם עד ~45 דקות) ויתחיל לעבוד על ה-PBIP.</p>
+  </div>
+
+  <h2 id="trouble">אם משהו לא עבד</h2>
+  <div class="tbl">
+    <table>
+      <thead><tr><th>מה קרה</th><th>מסלול</th><th>מה לעשות</th></tr></thead>
+      <tbody>
+        <tr><td><code>/plugin</code> לא מזוהה</td><td>א׳</td><td>אתם בצ'אט הרגיל — פתחו את Claude Code. אם עדיין חסום, עברו למסלול ב׳.</td></tr>
+        <tr><td>marketplace not found</td><td>א׳</td><td>הצביעו על התיקייה שמכילה את <code>marketplace.json</code>, לא על תיקיית האב.</td></tr>
+        <tr><td>התוסף לא מופיע אחרי הפעלה מחדש</td><td>ב׳</td><td>ודאו את המבנה <code>...\plugins\powerbi-report-reviewer\.claude-plugin\plugin.json</code>, והסירו תיקייה כפולה אם נוצרה.</td></tr>
+        <tr><td>Claude Code מתלונן על התו <code>#</code>, או שההודעה "נבלעת"</td><td>ג׳</td><td>הודבק טקסט שמתחיל ב-<code>#</code> ו-Claude Code מפרש זאת כפקודת זיכרון. אל תדביקו את תוכן <code>CLAUDE.md</code> לצ'אט — שמרו אותו כקובץ בתיקיית הפרויקט.</td></tr>
+        <tr><td>גם skills לא נטענים</td><td>ב׳ ← ג׳</td><td>עברו למסלול ג׳ — הוא לא דורש התקנה.</td></tr>
+        <tr><td>הכל חסום</td><td>—</td><td>מסלול ג׳ תמיד עובד. לתוספים — פנו למנהל המערכת.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>לעדכון בעתיד</h2>
+  <div class="tbl">
+    <table>
+      <thead><tr><th>מסלול</th><th>איך מעדכנים</th></tr></thead>
+      <tbody>
+        <tr><td>א׳</td><td><code>/plugin marketplace update local-powerbi</code> ואז <code>/plugin update powerbi-report-reviewer@local-powerbi</code></td></tr>
+        <tr><td>ב׳</td><td>מחקו את התיקייה הישנה, העתיקו את החדשה, הפעילו מחדש.</td></tr>
+        <tr><td>ג׳</td><td>החליפו את תוכן תיקיית הכלים (TOOLKIT) בחדש. <code>CLAUDE.md</code> נשאר כמו שהוא.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>רכיבים</h2>
+  <div class="tbl">
+    <table>
+      <thead><tr><th>רכיב</th><th>כמות</th><th>תפקיד</th></tr></thead>
+      <tbody>
+        <tr><td>Skills</td><td>2</td><td>סוקר דוח Power BI (ביקורת בעברית, קריא-בלבד) + חיפוש ידע עיצובי (BM25)</td></tr>
+        <tr><td>Scripts</td><td>7</td><td><code>pbi_extract</code> / <code>pbi_analyze</code> / <code>pbi_check</code> / <code>pbi_doc</code> / <code>pbi_map</code> / <code>pbi_bench</code> / <code>pbi_validate</code> (סוקר) · BM25 search</td></tr>
+        <tr><td>Tests</td><td>22</td><td><code>test_pbi_bench</code> + <code>test_pbi_check</code> + <code>test_stability</code> (סוקר)</td></tr>
+        <tr><td>Agents / Hooks / MCP</td><td>0</td><td>לא נדרש — הסוכן עצמאי לחלוטין</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>הערות</h2>
+  <ul>
+    <li><strong>עצמאי לחלוטין:</strong> כל הידע (מבנה PBIP, צ'קליסט, קטלוג ויזואלים, תבניות DAX, ערכות צבע) מוטמע בתוך ה-skill. אין תלות ב-GitHub או בשירות חיצוני בזמן ריצה.</li>
+    <li><strong>הפלט תמיד בעברית (RTL).</strong> הצבעים גמישים — הסוכן מציע ערכות אך אינו כופה אחת קבועה.</li>
+    <li><strong>רישיון:</strong> MIT.</li>
+  </ul>
+
+  <div class="note">
+    <span class="tag">נוהל ארגוני — לפני מפגש מנהלים</span>
+    <p>לפני שדוח מוצג בפני הנהלה יש להריץ עליו את הסוכן ולעבור על הממצאים. בנוסף יש לוודא ששיתפתם את <strong>ראובן</strong> ואת <strong>פנינית</strong> ב-Workspace / App של הדשבורדים שלכם ב-Power BI. זה חלק מתהליך ההכנה למפגש מנהלים לצד <strong>תבנית אפיון למפגש</strong> — שם גם נקבע שיש לתאם עם ראובן פגישת הכנה בשבוע שלפני מפגש המנהלים.</p>
+  </div>
+
+  <footer>מבוסס על README.md של powerbi-report-reviewer (גרסת main, סורק בלבד).</footer>
+
+</div>

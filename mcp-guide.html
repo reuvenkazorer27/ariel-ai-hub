@@ -1,0 +1,409 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Power BI MCP ללא Node</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Cdefs%3E%3ClinearGradient id=%27g%27 x1=%270%27 y1=%270%27 x2=%271%27 y2=%271%27%3E%3Cstop offset=%270%27 stop-color=%27%234F46E5%27/%3E%3Cstop offset=%271%27 stop-color=%27%237C3AED%27/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width=%2732%27 height=%2732%27 rx=%278%27 fill=%27url(%23g)%27/%3E%3Cpath d=%27M9 22 L9 15 M16 22 L16 10 M23 22 L23 13%27 stroke=%27%23fff%27 stroke-width=%273.2%27 stroke-linecap=%27round%27/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;600;700;800&family=Assistant:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="theme.css">
+<style>
+
+  
+  
+  
+
+  *{box-sizing:border-box}
+  html{direction:rtl; scroll-behavior:smooth}
+  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} }
+  body{
+    background:var(--bg); color:var(--ink); direction:rtl;
+    font-family:var(--font-ui);
+    font-size:16px; line-height:1.7; margin:0;
+    -webkit-font-smoothing:antialiased;
+  }
+  .page{direction:rtl; text-align:right; max-width:72ch; margin:0 auto; padding:72px 28px 96px}
+  @media (prefers-reduced-motion:no-preference){
+    .page > *:nth-child(-n+3){animation:pageIn .6s cubic-bezier(.16,1,.3,1) both}
+    .page > *:nth-child(1){animation-delay:0s} .page > *:nth-child(2){animation-delay:.05s} .page > *:nth-child(3){animation-delay:.1s}
+  }
+  @keyframes pageIn{from{opacity:0; transform:translateY(14px)} to{opacity:1; transform:translateY(0)}}
+  @media (max-width:640px){ .page{padding:44px 20px 72px} }
+
+  .eyebrow{
+    font-family:var(--font-display); font-size:12px; font-weight:700; letter-spacing:.09em;
+    color:var(--accent-ink); margin:0 0 14px;
+  }
+  h1{
+    font-family:var(--font-display); font-size:clamp(30px,5.5vw,42px); line-height:1.18; font-weight:800;
+    letter-spacing:-.02em; text-wrap:balance; margin:0 0 16px;
+  }
+  .lede{font-size:18px; color:var(--muted); text-wrap:balance; margin:0 0 8px}
+  .rule{height:1px; background:var(--line); border:0; margin:40px 0}
+
+  h2{
+    font-family:var(--font-display); font-size:22px; font-weight:700; letter-spacing:-.012em;
+    text-wrap:balance; margin:56px 0 6px;
+  }
+  h2:first-of-type{margin-top:44px}
+  h3{font-family:var(--font-display); font-size:16px; font-weight:700; margin:28px 0 6px}
+  p{margin:0 0 14px}
+  strong{font-weight:640}
+  a{color:var(--accent-ink); text-decoration-thickness:1px; text-underline-offset:2px}
+  a:focus-visible,summary:focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:3px}
+
+  .part{
+    display:inline-block; font-size:11.5px; font-weight:660; letter-spacing:.08em;
+    color:var(--accent-ink); background:var(--accent-soft);
+    padding:3px 10px; border-radius:100px; margin:56px 0 0;
+  }
+  .part + h2{margin-top:10px}
+
+  code{
+    font-family:ui-monospace,"Cascadia Code",Consolas,monospace;
+    font-size:.87em; background:var(--code-bg); color:var(--code-ink);
+    padding:.12em .38em; border-radius:4px;
+    direction:ltr; unicode-bidi:embed; display:inline-block;
+    text-align:left;
+  }
+  pre{
+    background:var(--code-bg); color:var(--code-ink);
+    border:1px solid var(--line); border-radius:10px;
+    padding:16px 18px; margin:0 0 16px;
+    overflow-x:auto; direction:ltr; text-align:left;
+  }
+  pre code{background:none; padding:0; font-size:13px; line-height:1.6; display:block}
+  .cap{
+    font-size:12.5px; color:var(--faint); margin:-8px 0 20px;
+    display:flex; gap:6px; align-items:baseline;
+  }
+
+  ol.steps{list-style:none; counter-reset:s; padding:0; margin:0}
+  ol.steps > li{
+    counter-increment:s; position:relative;
+    padding:0 46px 4px 0; margin:0 0 34px;
+  }
+  ol.steps > li::before{
+    content:counter(s); position:absolute; right:0; top:1px;
+    width:30px; height:30px; border-radius:50%;
+    background:var(--accent-soft); color:var(--accent-ink);
+    font-size:14px; font-weight:660; font-variant-numeric:tabular-nums;
+    display:flex; align-items:center; justify-content:center;
+  }
+  ol.steps > li > h3{margin-top:2px}
+
+  ul,ol.plain{padding:0 20px 0 0; margin:0 0 14px}
+  li{margin-bottom:7px}
+
+  .note{
+    border-radius:10px; padding:14px 16px; margin:0 0 18px;
+    border:1px solid var(--line); background:var(--surface); font-size:15px;
+  }
+  .note > :last-child{margin-bottom:0}
+  .note.warn{border-color:var(--warn); background:var(--warn-soft)}
+  .note.ok{border-color:var(--ok); background:var(--ok-soft)}
+  .note .tag{
+    display:block; font-size:12px; font-weight:660; letter-spacing:.05em;
+    margin-bottom:5px;
+  }
+  .note.warn .tag{color:var(--warn)}
+  .note.ok .tag{color:var(--ok)}
+
+  .tbl{overflow-x:auto; margin:0 0 18px; border:1px solid var(--line); border-radius:10px}
+  table{border-collapse:collapse; width:100%; font-size:14.5px; background:var(--surface)}
+  th,td{text-align:right; padding:11px 14px; border-bottom:1px solid var(--line); vertical-align:top}
+  th{background:var(--raise); font-weight:640; font-size:13px; color:var(--muted)}
+  tr:last-child td{border-bottom:0}
+  td code{font-size:12.5px}
+
+  details{
+    border:1px solid var(--line); border-radius:10px;
+    padding:0 16px; margin:0 0 18px; background:var(--surface);
+  }
+  summary{cursor:pointer; font-weight:600; padding:13px 0; font-size:15px; list-style-position:inside}
+  details[open] summary{border-bottom:1px solid var(--line); margin-bottom:14px}
+  details > :last-child{margin-bottom:14px}
+
+  footer{
+    margin-top:64px; padding-top:22px; border-top:1px solid var(--line);
+    font-size:13.5px; color:var(--faint);
+  }
+
+  .quicknav{display:flex; flex-wrap:wrap; gap:8px; margin:0 0 28px}
+  .quicknav a{
+    font-family:var(--font-display); font-weight:700; font-size:12.5px;
+    color:var(--accent-ink); background:var(--accent-soft); border:1px solid transparent;
+    border-radius:999px; padding:6px 14px; text-decoration:none; transition:.15s;
+  }
+  .quicknav a:hover{border-color:var(--accent)}
+  .quicknav a:active{transform:scale(.96)}
+  .quicknav a:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+</style>
+
+<div class="page">
+
+  <p class="eyebrow">מדריך התקנה · Windows · ללא הרשאות אדמין</p>
+  <h1>Power BI MCP בלי Node.js</h1>
+  <p class="lede">שרת ה‑MCP של מיקרוסופט למודלים סמנטיים נארז כקובץ הרצה מקומפל. Node נדרש רק למסלול ה‑NPX — אפשר לעקוף אותו לגמרי בהורדה ידנית של החבילה. המדריך מכסה את שרשרת העבודה המלאה: התקנת השרת, חיבורו ל‑Claude, הוספת הסקילים של Power BI, ועבודה שוטפת מול קובץ PBIP.</p>
+
+  <hr class="rule">
+
+  <nav class="quicknav" aria-label="ניווט מהיר במדריך">
+    <a href="#why">למה בלי Node</a>
+    <a href="#part-a">חלק א׳ · התקנה</a>
+    <a href="#part-b">חלק ב׳ · סקילים</a>
+    <a href="#part-c">חלק ג׳ · עבודה שוטפת</a>
+  </nav>
+
+  <h2 id="why">למה זה עובד בלי Node</h2>
+  <p>התיעוד הרשמי פותח ב‑<code>npx</code>, ומשם קל להסיק ש‑Node הוא תנאי סף. הוא לא. חבילת ה‑NPX רק מורידה ומריצה בינארי מוכן — ואת אותו בינארי אפשר להשיג ישירות מה‑Marketplace. הוא <code>.exe</code> עצמאי שמדבר stdio מול לקוח ה‑MCP.</p>
+
+  <div class="note ok">
+    <span class="tag">מה שנדרש בפועל</span>
+    <p>Power BI Desktop מותקן, וקובץ פתוח בו. זהו. שרת ה‑MCP מתחבר למופע ה‑Analysis Services שרץ מתחת ל‑Desktop.</p>
+  </div>
+
+  <div class="note ok">
+    <span class="tag">אפס הרשאות אדמין</span>
+    <p>כל מה שמתואר במדריך הזה — ההורדה, החילוץ, עריכת קובץ הקונפיגורציה, שכפול המאגר והוספת הסקילים — מתבצע בתוך תיקיית המשתמש ואינו דורש הרשאות מנהל. זו בדיוק הסיבה להימנע מ‑Node: התקנת Node דרך <code>winget</code> או המתקין הרשמי היא הצעד היחיד בשרשרת שכן היה דורש אדמין.</p>
+  </div>
+
+  <p class="part" id="part-a">חלק א׳</p>
+  <h2>התקנת שרת ה‑MCP</h2>
+  <p>זהו התנאי המקדים לכל השאר. <strong>קודם מתקינים ורושמים את שרת ה‑MCP</strong> — רק אחר כך מוסיפים את הסקילים ומתחילים לעבוד. סקיל שמנסה לפנות לשרת שלא רשום ייכשל בשקט.</p>
+
+  <ol class="steps">
+    <li>
+      <h3>הדבק את הכתובת בדפדפן</h3>
+      <p>אין כאן שום סקריפט ואין דף הורדות. מדביקים כתובת אחת בשורת הכתובת של הדפדפן, מקישים Enter, וההורדה מתחילה אוטומטית.</p>
+      <p>זו הכתובת להעתקה — הפורמט המתאים, גרסה <code>0.1.9</code> לפלטפורמת <code>win32-x64</code>:</p>
+<pre dir="ltr"><code>https://marketplace.visualstudio.com/_apis/public/gallery/publishers/analysis-services/vsextensions/powerbi-modeling-mcp/0.1.9/vspackage?targetPlatform=win32-x64</code></pre>
+      <p>המבנה הכללי, למי שרוצה גרסה או פלטפורמה אחרות — מחליפים רק את שני הערכים בסוגריים:</p>
+<pre dir="ltr"><code>https://marketplace.visualstudio.com/_apis/public/gallery/publishers
+/analysis-services/vsextensions/powerbi-modeling-mcp/[version]
+/vspackage?targetPlatform=[platform]</code></pre>
+      <p class="cap">הקובץ נוחת בתיקיית ההורדות בשם ארוך שמסתיים ב‑<code>.vsix</code>.</p>
+    </li>
+
+    <li>
+      <h3>שנה את שם הקובץ בתיקייה — סיומת <code>.zip</code></h3>
+      <p>קובץ VSIX הוא ארכיון ZIP רגיל עם סיומת אחרת. בתיקיית ההורדות: לחיצה ימנית על הקובץ ← <em>Rename</em> ← החלף את הסיומת <code>.vsix</code> ב‑<code>.zip</code>. Windows ישאל אם אתה בטוח — אשר.</p>
+      <p class="cap">לא רואה סיומות? ב‑Explorer: לשונית <em>View</em> ← סמן <em>File name extensions</em>.</p>
+    </li>
+
+    <li>
+      <h3>חלץ ידנית לתיקייה לבחירתך</h3>
+      <p>לחיצה ימנית על ה‑ZIP ← <em>Extract All</em> ← בחר יעד, למשל:</p>
+<pre dir="ltr"><code>C:\MCPServers\PowerBIModelingMCP</code></pre>
+      <p class="cap">בלי סקריפט ובלי כלי חיצוני — החילוץ המובנה של Windows מספיק.</p>
+    </li>
+
+    <li>
+      <h3>הרץ פעם אחת לאימות</h3>
+      <p>הפעל את קובץ ההרצה שחולץ:</p>
+<pre dir="ltr"><code>C:\MCPServers\PowerBIModelingMCP\extension\server\powerbi-modeling-mcp.exe</code></pre>
+      <p>הרצה ללא ארגומנטים מדפיסה לקונסולה את בלוק ה‑JSON לרישום. אם הבלוק מודפס — הבינארי תקין ומוכן.</p>
+      <div class="note">
+        <p>שים לב לרובד <code>extension\</code> בתוך הנתיב. הוא קיים בדיוק כי חילצנו את ה‑VSIX ידנית, וה‑ZIP עצמו מכיל תיקיית <code>extension</code> בשורשו.</p>
+      </div>
+    </li>
+
+    <li>
+      <h3>טען את ה‑JSON לתוך הקונפיגורציה של Claude</h3>
+      <p>העתק את הבלוק שהודפס בקונסולה. ב‑Claude, פתח את קובץ הקונפיגורציה דרך המסלול הזה:</p>
+      <p><strong>Customize</strong> ← <strong>Developer</strong> ← <strong>Edit Config</strong></p>
+      <p>הקובץ ייפתח בעורך טקסט. הוסף לתוכו את הבלוק ושמור.</p>
+      <p class="cap">זה אותו קובץ שיושב ב‑<code>%APPDATA%\Claude\claude_desktop_config.json</code> — פשוט בלי לחפש אותו ידנית.</p>
+    </li>
+  </ol>
+
+  <div class="note warn">
+    <span class="tag">מלכודת העטיפה</span>
+    <p>קטע ה‑JSON בתיעוד הרשמי מתחיל ישירות ב‑<code>"powerbi-modeling-mcp"</code> בלי מפתח עוטף. הלקוחות דורשים <code>mcpServers</code> סביבו. הדבקה של הקטע כמו שהוא תיטען בלי שגיאה ובלי כלים — וזו התקלה הכי קשה לאבחון בכל התהליך.</p>
+  </div>
+
+  <p>כך זה צריך להיראות בפועל:</p>
+<pre dir="ltr"><code>{
+  "mcpServers": {
+    "powerbi-modeling-mcp": {
+      "type": "stdio",
+      "command": "C:\\MCPServers\\PowerBIModelingMCP\\extension\\server\\powerbi-modeling-mcp.exe",
+      "args": ["--start"],
+      "env": {}
+    }
+  }
+}</code></pre>
+  <p class="cap">החלף את הנתיב בנתיב האמיתי אצלך — זה שהרצת בשלב 4.</p>
+
+  <h2>סגור את Claude לגמרי — כולל במנהל המשימות</h2>
+  <p>Claude קורא את קובץ הקונפיגורציה רק בעליית התהליך. סגירת החלון <strong>אינה</strong> סוגרת את התהליך: Claude Desktop ממשיך לרוץ ברקע, ולכן העריכה שביצעת פשוט לא תיטען, והכלים לא יופיעו.</p>
+  <ol class="plain">
+    <li>סגור את חלון היישום.</li>
+    <li>פתח את מנהל המשימות (<code>Ctrl+Shift+Esc</code>), חפש את כל התהליכים בשם <strong>Claude</strong>, וסיים כל אחד מהם ב‑<em>End task</em>.</li>
+    <li>פתח את Claude מחדש.</li>
+  </ol>
+  <p>מי שמעדיף פקודה אחת במקום מנהל המשימות:</p>
+<pre dir="ltr"><code>Get-Process Claude -ErrorAction SilentlyContinue | Stop-Process -Force</code></pre>
+  <p class="cap">ב‑Claude Code בטרמינל — יציאה מהסשן והרצה מחדש מספיקה.</p>
+
+  <p class="part" id="part-b">חלק ב׳</p>
+  <h2>הוספת הסקילים של Power BI</h2>
+  <p>שרת ה‑MCP נותן את הכלים. הסקילים נותנים את הידע — איך לבנות דוח PBIR תקין, איך לתכנן מודל סמנטי, מה הכללים של כל פורמט. מיקרוסופט מפרסמת אותם במאגר פתוח.</p>
+
+  <ol class="steps">
+    <li>
+      <h3>שכפל את המאגר</h3>
+      <p>המאגר הוא <a href="https://github.com/microsoft/skills-for-fabric">microsoft/skills-for-fabric</a>. שכפול לתיקייה זמנית — לא לתיקיית העבודה:</p>
+<pre dir="ltr"><code>git clone --depth 1 https://github.com/microsoft/skills-for-fabric.git `
+  "$env:TEMP\skills-for-fabric"</code></pre>
+      <p class="cap">אין git? הורד ZIP מכפתור <em>Code</em> בדף המאגר וחלץ לאותו מקום.</p>
+    </li>
+
+    <li>
+      <h3>העתק רק את הסקילים של Power BI</h3>
+      <p>המאגר מכיל עשרות סקילים לכל שירותי Fabric — Spark, Eventstream, מיגרציות ועוד. רובם לא רלוונטיים, וכל סקיל מיותר גוזל הקשר ומבלבל את המודל בבחירה. קח את חמשת הסקילים של Power BI בלבד:</p>
+<pre dir="ltr"><code>$src  = "$env:TEMP\skills-for-fabric\skills"
+$dest = ".\.claude\skills"          # מתוך תיקיית הפרויקט שלך
+
+$keep = @(
+  "semantic-model-authoring",
+  "powerbi-report-planning",
+  "powerbi-report-design",
+  "powerbi-report-authoring",
+  "powerbi-report-management"
+)
+
+New-Item -ItemType Directory -Force -Path $dest | Out-Null
+foreach ($s in $keep) {
+  Copy-Item -Path (Join-Path $src $s) -Destination $dest -Recurse -Force
+}
+Get-ChildItem $dest -Directory | Select-Object -ExpandProperty Name</code></pre>
+      <div class="tbl">
+        <table>
+          <thead><tr><th>סקיל</th><th>למה הוא אחראי</th></tr></thead>
+          <tbody>
+            <tr><td><code>semantic-model-authoring</code></td><td>טבלאות, עמודות, מדדים, קשרים, TMDL</td></tr>
+            <tr><td><code>powerbi-report-planning</code></td><td>אפיון דוח מקצה לקצה ואישור מפרט</td></tr>
+            <tr><td><code>powerbi-report-design</code></td><td>בחירת ויזואלים, פריסה, צבע, טיפוגרפיה</td></tr>
+            <tr><td><code>powerbi-report-authoring</code></td><td>כתיבת קבצי PBIR בפועל</td></tr>
+            <tr><td><code>powerbi-report-management</code></td><td>העלאה והורדה מול Fabric</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </li>
+
+    <li>
+      <h3>הוסף קובץ MD שמחייב שימוש בסקילים</h3>
+      <p>Claude לא תמיד טורח לטעון סקיל מיוזמתו — הוא עלול לנחש תשובה ולערוך JSON ידנית במקום. קובץ <code>CLAUDE.md</code> בשורש תיקיית העבודה נטען אוטומטית בכל סשן והופך את זה לכלל מחייב:</p>
+<pre dir="ltr"><code># Power BI workspace rules
+
+## Skills are mandatory, not optional
+
+Before ANY Power BI work, load the matching skill first.
+Never edit model or report files from memory.
+
+| Task | Skill to load first |
+|---|---|
+| Tables, columns, measures, relationships, TMDL | semantic-model-authoring |
+| Planning a new report end to end | powerbi-report-planning |
+| Visual selection, layout, colors, theme | powerbi-report-design |
+| Writing or editing PBIR files | powerbi-report-authoring |
+| Upload / download to Fabric | powerbi-report-management |
+
+Rules:
+- Announce which skill you loaded before the first edit.
+- If no skill fits, say so instead of improvising.
+- The powerbi-modeling-mcp server must be connected before
+  touching a live model. Verify with a local-instance listing.
+- Do not close and reopen the PBIP file after edits.
+  Use "Apply external changes" in Power BI Desktop instead.
+
+## RTL and Hebrew — non-negotiable
+
+This report is Hebrew. RTL is not a finishing touch, it is a
+requirement on every object you create or edit.
+
+- Every page and every visual must be right-to-left.
+- All titles are Hebrew, right-aligned, and read right-to-left.
+- Axis labels, legends, tooltips, card labels, slicer headers
+  and table/matrix headers: Hebrew, right-aligned.
+- Column and measure display names are Hebrew.
+- Numbers, dates, percentages and English measure names stay
+  LTR inside the RTL layout. Do not mirror them.
+- Never leave a default English title on a visual.
+- After every batch of edits, re-check the newest visuals for
+  leftover left-aligned titles. This is the most common miss.
+
+DAX note: VAR identifiers must be English. A Hebrew VAR name
+fails with "Invalid token" and silently returns an empty column,
+with no visible error in the UI.
+</code></pre>
+      <p class="cap">שמור בשם <code>CLAUDE.md</code> בשורש התיקייה — לצד תיקיית <code>.claude</code>.</p>
+    </li>
+  </ol>
+
+  <div class="note warn">
+    <span class="tag">שתי סקילים לא יעבדו במלואן בלי Node</span>
+    <p><strong>powerbi-report-authoring</strong> ו‑<strong>powerbi-report-planning</strong> נשענות על שני כלי CLI שמופצים כחבילות npm ודורשים Node 20 ומעלה — <code>powerbi-report-author</code> לאימות סכימת PBIR, ו‑<code>powerbi-desktop</code> ללולאת הצילום והרינדור. בלי Node עדיין אפשר לערוך PBIR ידנית, אבל בלי אימות סכימה ובלי צילום מסך אוטומטי.</p>
+    <p>שלוש הסקילים האחרות — <code>semantic-model-authoring</code>, <code>powerbi-report-design</code> ו‑<code>powerbi-report-management</code> — עובדות במלואן בלי Node. וכל מה שתואר עד כאן במדריך, כולל שתיהן במצב הידני, לא דורש הרשאות אדמין.</p>
+  </div>
+
+  <p class="part" id="part-c">חלק ג׳</p>
+  <h2>עבודה שוטפת — שמור כ‑PBIP</h2>
+  <p>קובץ <code>.pbix</code> הוא ארכיון בינארי סגור. Claude לא יכול לקרוא או לערוך אותו. פורמט <code>.pbip</code> חושף את אותו תוכן כתיקייה של קבצי טקסט — TMDL למודל, PBIR לדוח — וזה מה שהופך את כל השרשרת לאפשרית.</p>
+
+  <ol class="steps">
+    <li>
+      <h3>שמור את קובץ ה‑Power BI כ‑PBIP</h3>
+      <p>ב‑Power BI Desktop: <em>File</em> ← <em>Save as</em> ← בבורר סוג הקובץ בחר <strong>Power BI project (*.pbip)</strong>. שמור אל תוך תיקיית הפרויקט — אותה תיקייה שבה יושבים <code>CLAUDE.md</code> ו‑<code>.claude</code>.</p>
+      <p>אם האפשרות לא מופיעה בבורר: <em>File</em> ← <em>Options and settings</em> ← <em>Options</em> ← <em>Preview features</em>, סמן את אפשרות השמירה כ‑‎<code>.pbip</code>‎ ואת אחסון המודל בפורמט TMDL, והפעל מחדש את Desktop.</p>
+      <p class="cap">התוצאה היא קובץ <code>.pbip</code> קטן לצד תיקיות <code>.SemanticModel</code> ו‑<code>.Report</code> — כולן טקסט קריא.</p>
+    </li>
+
+    <li>
+      <h3>בקש מ‑Claude להתחבר, ושיאשר לך</h3>
+      <p>השאר את הקובץ פתוח ב‑Power BI Desktop, פתח את Claude בתיקיית הפרויקט, וכתוב לו בדיוק את זה:</p>
+<pre dir="ltr"><code>תתחבר לקובץ &lt;שם הקובץ&gt; שפתוח ב-Power BI Desktop
+ותעדכן אותי שהצלחת.</code></pre>
+      <p>תשובה תקינה כוללת אישור חיבור עם פרטי המופע המקומי — מזהה תהליך, פורט, ומחרוזת חיבור:</p>
+<pre dir="ltr"><code>{
+  "success": true,
+  "data": [{
+    "processId": 27296,
+    "port": 55159,
+    "connectionString": "Data Source=localhost:55159",
+    "parentProcessName": "PBIDesktop",
+    "parentWindowTitle": "&lt;your file&gt;"
+  }]
+}</code></pre>
+      <p>אם קיבלת את האישור — הכל מחובר. מכאן זמינות קריאת מטא‑דאטה, יצירת מדדים, שאילתות DAX ועריכת TMDL ו‑PBIR.</p>
+      <p class="cap">לא קיבלת אישור? חזור לחלק א׳: ודא שה‑JSON עטוף ב‑<code>mcpServers</code>, ושסגרת את Claude סגירה מלאה כולל במנהל המשימות.</p>
+    </li>
+
+    <li>
+      <h3>אחרי כל שינוי — Apply external changes</h3>
+      <p>כש‑Claude כותב לקבצים על הדיסק, Power BI Desktop מזהה את השינוי ומציג פס התראה בראש החלון עם הכפתור <strong>Apply external changes</strong>. לחץ עליו. זהו.</p>
+      <div class="note ok">
+        <span class="tag">אל תסגור ואל תפתח מחדש</span>
+        <p>סגירה ופתיחה של הקובץ אחרי כל עריכה היא ההרגל שהכי שובר את התהליך: Power BI Desktop מקצה פורט אקראי חדש בכל פתיחה, ולכן החיבור של ה‑MCP נופל וצריך לחבר מחדש בכל סבב. <em>Apply external changes</em> טוען את השינוי בתוך אותו מופע — הפורט נשמר, החיבור חי, ואפשר להמשיך ברצף.</p>
+      </div>
+    </li>
+
+    <li>
+      <h3>עצור וצלם מסך אחרי כל שינוי</h3>
+      <p>זהו הפיצוי הישיר על מה שחסר בלי Node. סקיל האימות וסקיל צילום המסך הם שסוגרים בדרך כלל את הלולאה — הם מריצים בדיקת סכימה על הדוח ומחזירים ל‑Claude תמונה של התוצאה, כך שהוא רואה בעצמו מה יצא ומתקן. בלי Node שתי היכולות האלה לא זמינות, ו‑Claude עובד עיוור.</p>
+      <p>לכן, למי שלא הצליח להתקין Node — זו שגרת העבודה המומלצת:</p>
+      <ol class="plain">
+        <li>Claude מבצע שינוי בקבצים.</li>
+        <li>לחץ <em>Apply external changes</em> ב‑Desktop.</li>
+        <li><strong>עצור</strong> — צלם מסך של הדוח (<code>Win+Shift+S</code>).</li>
+        <li>הדבק את הצילום ב‑Claude וכתוב מה לתקן.</li>
+      </ol>
+      <p>הצילום הידני הוא בדיוק מה שהסקיל היה מספק אוטומטית. עדיף סבב אחד עם תמונה מאשר שלושה סבבים של ניחושים — במיוחד בבדיקת RTL, יישור כותרות ועברית בוויזואלים, שם רק העין תופסת את הבעיה.</p>
+    </li>
+  </ol>
+
+  <footer>
+    מבוסס על התקנה שנבדקה בפועל — Windows, פלטפורמת win32-x64, ללא Node.js וללא הרשאות מנהל.
+  </footer>
+
+</div>

@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ariel AI Hub</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Cdefs%3E%3ClinearGradient id=%27g%27 x1=%270%27 y1=%270%27 x2=%271%27 y2=%271%27%3E%3Cstop offset=%270%27 stop-color=%27%234F46E5%27/%3E%3Cstop offset=%271%27 stop-color=%27%237C3AED%27/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width=%2732%27 height=%2732%27 rx=%278%27 fill=%27url(%23g)%27/%3E%3Cpath d=%27M9 22 L9 15 M16 22 L16 10 M23 22 L23 13%27 stroke=%27%23fff%27 stroke-width=%273.2%27 stroke-linecap=%27round%27/%3E%3C/svg%3E">
+<script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.js" defer></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;600;700;800&family=Assistant:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="theme.css">
+<style>
+/* ============================================================
+   Ariel AI Hub — home shell
+   Locked system (do not mix):
+     · Accent  : one only — indigo (--accent).
+     · Radius  : controls 12px · cards/panels 20px · icon chips 12px · tags pill
+     · Type    : Rubik (display) + Assistant (body/UI), both full Hebrew
+     · Theme   : one theme per page, follows prefers-color-scheme,
+                 overridable with [data-theme]. Rail + hero are ONE dark mass;
+                 everything below is the page surface. No mid-page flips.
+     · Motion  : entry (hierarchy), scroll reveal (sequence), hover (feedback).
+                 All gated behind prefers-reduced-motion.
+     · Rhythm  : one 1220px measure, one gutter, one 16px grid gap.
+                 Tools appear in exactly two places: the rail (navigate)
+                 and the grid (browse). Never a third.
+   ============================================================ */
+
+
+
+
+
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; direction:rtl; text-align:right;
+  font-family:var(--font-ui);
+  font-size:15px; line-height:1.62;
+  background:var(--paper); color:var(--ink);
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+}
+h1,h2,h3,.display{font-family:var(--font-display); letter-spacing:-.022em}
+[data-lucide]{width:1em; height:1em}
+svg.lucide{display:block}
+.num{font-variant-numeric:tabular-nums lining-nums}
+
+.shell{display:grid; grid-template-columns:268px 1fr; height:100dvh; overflow:hidden}
+@media (max-width:900px){ .shell{grid-template-columns:1fr} }
+
+/* ============================== rail ============================== */
+.side{
+  background:var(--ink-950); color:var(--d-title);
+  padding:22px 16px 16px; display:flex; flex-direction:column;
+  overflow-y:auto; position:relative; z-index:50;
+}
+.side::before{
+  content:""; position:absolute; inset:0; pointer-events:none;
+  background:
+    radial-gradient(80% 46% at 100% 0%, rgba(124,58,237,.30), transparent 62%),
+    radial-gradient(70% 42% at 0% 100%, rgba(79,70,229,.22), transparent 64%);
+}
+.side > *{position:relative; z-index:1}
+
+.side-top{display:flex; align-items:center; justify-content:space-between; gap:10px}
+.brand{display:flex; align-items:center; gap:11px; min-width:0}
+.brand .mark{
+  width:36px; height:36px; border-radius:var(--r-chip); flex:none; display:grid; place-items:center;
+  background:linear-gradient(140deg,#6366F1,#8B5CF6); color:#fff;
+  box-shadow:0 6px 16px -6px rgba(124,58,237,.8), inset 0 1px 0 rgba(255,255,255,.35);
+}
+.brand b{font-family:var(--font-display); font-weight:700; font-size:16px; letter-spacing:-.01em; color:#fff}
+.brand i{display:block; font-style:normal; font-size:11.5px; color:var(--d-dim); font-weight:500; margin-top:-2px}
+.drawer-close{display:none}
+
+.rail-label{
+  font-family:var(--font-display); font-weight:600; font-size:11px; letter-spacing:.1em;
+  color:var(--d-dim); margin:24px 8px 8px;
+}
+
+nav.tools{display:flex; flex-direction:column; gap:2px}
+nav.tools button{
+  all:unset; box-sizing:border-box; cursor:pointer; display:flex; align-items:center; gap:11px;
+  min-height:42px; padding:9px 11px; border-radius:var(--r-ctl); color:var(--d-body); font-size:14.5px;
+  font-weight:500; transition:background .16s var(--ease), color .16s var(--ease);
+}
+nav.tools button:hover{background:rgba(255,255,255,.07); color:#fff}
+nav.tools button:focus-visible{outline:2px solid #A5ABFF; outline-offset:2px}
+nav.tools button.on{background:var(--accent); color:var(--accent-on); font-weight:600; box-shadow:0 6px 18px -6px rgba(79,70,229,.7)}
+nav.tools button .ic{
+  width:26px; height:26px; border-radius:8px; background:rgba(255,255,255,.07);
+  display:grid; place-items:center; flex:none; transition:background .16s;
+}
+nav.tools button:hover .ic{background:rgba(255,255,255,.14)}
+nav.tools button.on .ic{background:rgba(255,255,255,.2)}
+nav.tools button .lbl{overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+
+.rail-cta{margin-top:auto; padding:18px 8px 0; border-top:1px solid var(--d-line)}
+.rail-cta-secondary{margin-top:12px; padding-top:12px}
+.rail-cta b{display:block; font-family:var(--font-display); font-weight:600; font-size:14px; color:#fff; margin-bottom:3px}
+.rail-cta p{color:var(--d-dim); font-size:12.5px; margin:0 0 12px; line-height:1.5}
+.dl-btn{
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  background:#fff; color:var(--ink-950);
+  font-family:var(--font-display); font-weight:600; font-size:13.5px;
+  text-decoration:none; border-radius:var(--r-ctl); padding:11px 14px;
+  box-shadow:0 4px 14px -4px rgba(0,0,0,.45);
+  transition:transform .18s var(--ease), box-shadow .18s var(--ease);
+}
+.dl-btn:hover{transform:translateY(-2px); box-shadow:0 10px 22px -6px rgba(0,0,0,.5)}
+.dl-btn:active{transform:translateY(0) scale(.98)}
+.dl-btn:focus-visible{outline:2px solid #A5ABFF; outline-offset:3px}
+
+/* ===================== mobile top bar + scrim ===================== */
+.mobile-topbar{
+  display:none; align-items:center; gap:12px; padding:10px 14px;
+  border-bottom:1px solid var(--line); background:var(--surface); flex:none; z-index:20;
+}
+.mobile-topbar b{font-family:var(--font-display); font-weight:700; font-size:15px}
+.hamburger{
+  all:unset; cursor:pointer; width:42px; height:42px; border-radius:var(--r-ctl);
+  display:grid; place-items:center; color:var(--ink); background:var(--line-soft); flex:none;
+}
+.hamburger:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+.side-scrim{display:none; position:fixed; inset:0; background:rgba(10,10,28,.55); z-index:40; opacity:0; pointer-events:none; transition:opacity .2s}
+.side-scrim.on{opacity:1; pointer-events:auto}
+
+@media (max-width:900px){
+  .mobile-topbar{display:flex}
+  .side{
+    position:fixed; top:0; bottom:0; right:0; width:min(318px,86vw);
+    transform:translateX(100%); transition:transform .28s var(--ease);
+    box-shadow:-24px 0 60px -24px rgba(0,0,0,.6);
+  }
+  .side.open{transform:translateX(0)}
+  .side-scrim{display:block}
+  .drawer-close{display:grid; place-items:center; all:unset; cursor:pointer; width:42px; height:42px;
+    border-radius:var(--r-ctl); color:var(--d-body); background:rgba(255,255,255,.08)}
+  .drawer-close:focus-visible{outline:2px solid #A5ABFF; outline-offset:2px}
+}
+
+/* ============================== main ============================== */
+main{display:flex; flex-direction:column; min-width:0; min-height:0; height:100%; overflow:hidden}
+.view{display:none; flex:1; min-height:0; overflow-y:auto}
+.view.on{display:flex; flex-direction:column}
+#dash > *{flex-shrink:0}
+
+/* one measure, one gutter, everywhere */
+.wrap{max-width:var(--measure); margin-inline:auto; padding-inline:var(--gutter); width:100%}
+
+/* ------------------------------ hero ------------------------------ */
+.hero{
+  position:relative; overflow:hidden; background:var(--ink-950);
+  padding-block:clamp(38px,4.6vw,62px) clamp(34px,4vw,54px);
+}
+.hero::after{
+  content:""; position:absolute; inset:0; pointer-events:none;
+  background:
+    radial-gradient(54% 74% at 90% -16%, rgba(139,92,246,.40), transparent 62%),
+    radial-gradient(46% 58% at 2% -8%, rgba(79,70,229,.48), transparent 64%);
+}
+.hero::before{
+  content:""; position:absolute; inset:0; pointer-events:none;
+  background-image:
+    linear-gradient(rgba(255,255,255,.038) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.038) 1px, transparent 1px);
+  background-size:58px 58px;
+  -webkit-mask-image:radial-gradient(76% 108% at 50% 0%, #000 28%, transparent 88%);
+          mask-image:radial-gradient(76% 108% at 50% 0%, #000 28%, transparent 88%);
+}
+.hero .wrap{position:relative; z-index:1}
+
+/* text block and figures share one baseline grid */
+.hero-grid{
+  display:grid; grid-template-columns:minmax(0,1fr) 384px;
+  gap:clamp(28px,4vw,64px); align-items:center;
+}
+@media (max-width:1120px){ .hero-grid{grid-template-columns:1fr; gap:30px} }
+
+.hero h1{
+  font-weight:800; font-size:clamp(30px,3.6vw,46px); line-height:1.1;
+  margin:0 0 14px; color:var(--d-title); text-wrap:balance; max-width:16ch;
+}
+.hero h1 em{font-style:normal; color:#B9BDFF}
+.hero .lede{color:var(--d-body); font-size:clamp(15px,1.15vw,16.5px); max-width:48ch; margin:0 0 26px; line-height:1.6}
+
+.cta-row{display:flex; flex-wrap:wrap; gap:10px}
+.btn{
+  all:unset; box-sizing:border-box; cursor:pointer; display:inline-flex; align-items:center; gap:9px;
+  white-space:nowrap; font-family:var(--font-display); font-weight:600; font-size:14.5px;
+  padding:0 20px; border-radius:var(--r-ctl); height:46px;
+  transition:transform .18s var(--ease), box-shadow .18s var(--ease), background .18s;
+}
+.btn:active{transform:translateY(0) scale(.98)}
+.btn-primary{background:#fff; color:var(--ink-950); box-shadow:0 6px 20px -6px rgba(0,0,0,.5)}
+.btn-primary:hover{transform:translateY(-2px); box-shadow:0 12px 26px -8px rgba(0,0,0,.55)}
+.btn-primary:focus-visible{outline:2px solid #fff; outline-offset:3px}
+.btn-ghost{background:rgba(255,255,255,.08); color:#fff; box-shadow:inset 0 0 0 1px var(--d-line)}
+.btn-ghost:hover{background:rgba(255,255,255,.15); transform:translateY(-2px)}
+.btn-ghost:focus-visible{outline:2px solid #A5ABFF; outline-offset:3px}
+@media (max-width:520px){ .cta-row{flex-direction:column; align-items:stretch} .btn{justify-content:center} }
+
+/* key numbers: the hero's counterweight, hairline quadrant, no box-in-box */
+.figures{
+  display:grid; grid-template-columns:1fr 1fr;
+  border:1px solid var(--d-line); border-radius:var(--r-card); overflow:hidden;
+  background:rgba(255,255,255,.045);
+}
+.figures > div{padding:20px 22px; border-inline-start:1px solid var(--d-line); border-block-start:1px solid var(--d-line)}
+.figures > div:nth-child(-n+2){border-block-start:0}
+.figures > div:nth-child(odd){border-inline-start:0}
+.figures b{
+  display:block; font-family:var(--font-display); font-weight:700; letter-spacing:-.04em;
+  font-size:clamp(28px,3vw,38px); line-height:1.05; color:#fff;
+}
+.figures span{font-size:12.5px; color:var(--d-dim)}
+@media (max-width:1120px){ .figures{max-width:520px} .figures > div{padding:16px 18px} }
+
+/* --------------------------- section head --------------------------- */
+.sec{padding-block:clamp(38px,4.2vw,58px)}
+.sec-hd{
+  display:flex; align-items:baseline; gap:14px; flex-wrap:wrap;
+  margin-bottom:20px; padding-bottom:16px; border-bottom:1px solid var(--line);
+}
+.sec-hd h2{font-weight:700; font-size:clamp(20px,2.2vw,26px); margin:0; color:var(--ink); line-height:1.2}
+.sec-hd p{color:var(--muted); font-size:14px; margin:0}
+@media (max-width:620px){ .sec-hd{display:block} .sec-hd p{margin-top:4px} }
+
+/* ------------------------------ bento ------------------------------ */
+/* 2 uniform columns + one double-height tile. Every cell shares a column
+   width, so the grid reads as one object instead of mixed fractions. */
+.bento{display:grid; grid-template-columns:repeat(4,1fr); gap:var(--gap)}
+.s2{grid-column:span 2}
+.feature{grid-column:span 2; grid-row:span 2}
+@media (max-width:780px){
+  .bento{grid-template-columns:1fr}
+  .s2,.feature{grid-column:span 1} .feature{grid-row:auto}
+}
+
+.card{
+  position:relative; display:flex; flex-direction:column; overflow:hidden; min-height:190px;
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--r-card);
+  box-shadow:var(--e1); cursor:pointer; width:100%; padding:0; margin:0;
+  font:inherit; color:inherit; text-align:inherit; text-decoration:none;
+  -webkit-appearance:none; appearance:none;
+  transition:transform .26s var(--ease), box-shadow .26s var(--ease), border-color .26s var(--ease);
+}
+.card:hover{transform:translateY(-4px); border-color:var(--accent-line); box-shadow:var(--e2)}
+.card:active{transform:translateY(-1px) scale(.99)}
+.card:focus-visible{outline:2px solid var(--accent); outline-offset:3px}
+/* cursor-tracked border highlight: pointer feedback, single accent hue */
+.card::after{
+  content:""; position:absolute; inset:0; border-radius:inherit; padding:1px; pointer-events:none;
+  background:radial-gradient(220px circle at var(--mx,50%) var(--my,50%), var(--accent), transparent 62%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor; mask-composite:exclude;
+  opacity:0; transition:opacity .3s;
+}
+.card:hover::after{opacity:.75}
+
+.card .body{padding:20px; display:flex; flex-direction:column; gap:8px; flex:1}
+.card .row{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:2px}
+.card .ic{
+  width:40px; height:40px; border-radius:var(--r-chip); background:var(--accent-soft); color:var(--accent);
+  display:grid; place-items:center; flex:none; transition:background .22s, color .22s;
+}
+.card:hover .ic{background:var(--accent); color:var(--accent-on)}
+.card .go{
+  width:28px; height:28px; border-radius:var(--r-chip); border:1px solid var(--line); color:var(--muted);
+  display:grid; place-items:center; flex:none; transition:.22s var(--ease);
+}
+.card:hover .go{background:var(--accent); border-color:var(--accent); color:var(--accent-on); transform:translateX(-3px)}
+.card h3{font-weight:600; font-size:16.5px; margin:0; color:var(--ink); line-height:1.32}
+.card p{color:var(--body); font-size:13.5px; margin:0; flex:1; line-height:1.58}
+.card .tags{display:flex; flex-wrap:wrap; gap:6px; margin-top:2px}
+.tag{
+  font-family:var(--font-display); font-weight:500; font-size:11.5px; line-height:1.5;
+  color:var(--accent); background:var(--accent-soft); border-radius:var(--r-pill); padding:4px 11px;
+  display:inline-flex; align-items:center; gap:5px;
+}
+.tag.outline{color:var(--muted); background:transparent; box-shadow:inset 0 0 0 1px var(--line)}
+
+/* featured tile: real visual variation (pattern + display numeral), not a mock screenshot */
+.card.feature .hdr{
+  position:relative; overflow:hidden; background:var(--ink-950); flex:1;
+  min-height:168px; padding:22px 20px; display:flex; flex-direction:column; justify-content:space-between;
+}
+.card.feature .hdr::before{
+  content:""; position:absolute; inset:0;
+  background:
+    radial-gradient(62% 80% at 88% 0%, rgba(139,92,246,.5), transparent 62%),
+    radial-gradient(54% 70% at 4% 100%, rgba(79,70,229,.45), transparent 64%);
+}
+.card.feature .hdr::after{
+  content:""; position:absolute; inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.055) 1px, transparent 1px);
+  background-size:32px 32px;
+  -webkit-mask-image:radial-gradient(92% 120% at 26% 0%, #000 22%, transparent 92%);
+          mask-image:radial-gradient(92% 120% at 26% 0%, #000 22%, transparent 92%);
+}
+.card.feature .hdr > *{position:relative; z-index:1}
+.card.feature .hdr .ic{
+  width:42px; height:42px; background:rgba(255,255,255,.14); color:#fff;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.28);
+}
+.card.feature:hover .hdr .ic{background:rgba(255,255,255,.24); color:#fff}
+.card.feature .big{
+  font-family:var(--font-display); font-weight:800; letter-spacing:-.05em;
+  font-size:clamp(42px,4.4vw,60px); line-height:.86; color:#fff;
+}
+.card.feature .big small{
+  display:block; font-family:var(--font-ui); font-weight:500;
+  font-size:12.5px; letter-spacing:0; color:var(--d-body); margin-top:9px; line-height:1.45;
+}
+@media (max-width:780px){ .card.feature .hdr{min-height:140px} }
+
+.card.zip{background:var(--surface-2); border-style:dashed; border-color:var(--accent-line)}
+
+/* scroll reveal: sequence the grid as it enters. IntersectionObserver, no scroll listener. */
+@media (prefers-reduced-motion:no-preference){
+  .reveal{opacity:0; transform:translateY(16px)}
+  .reveal.in{opacity:1; transform:none; transition:opacity .55s var(--ease), transform .55s var(--ease)}
+  .hero h1,.hero .lede,.hero .cta-row,.figures{animation:rise .75s var(--ease) both}
+  .hero .lede{animation-delay:.06s} .hero .cta-row{animation-delay:.12s} .figures{animation-delay:.1s}
+}
+@keyframes rise{from{opacity:0; transform:translateY(14px)} to{opacity:1; transform:none}}
+
+/* ---------------------------- procedures ---------------------------- */
+.proc{background:var(--surface); border-top:1px solid var(--line)}
+.proc ol{list-style:none; margin:0; padding:0; display:grid; grid-template-columns:1fr 1fr; gap:var(--gap); counter-reset:p}
+.proc li{
+  counter-increment:p; background:var(--surface-2); border:1px solid var(--line);
+  border-radius:var(--r-card); padding:22px; display:grid;
+  grid-template-columns:34px 1fr; grid-template-rows:auto auto; gap:6px 14px; align-content:start;
+}
+.proc li:last-child{grid-column:1 / -1}
+@media (max-width:860px){ .proc ol{grid-template-columns:1fr} .proc li:last-child{grid-column:auto} }
+.proc li::before{
+  content:counter(p,decimal-leading-zero); grid-row:1 / span 2;
+  font-family:var(--font-display); font-weight:700; font-size:13.5px; color:var(--accent);
+  background:var(--accent-soft); width:34px; height:34px; border-radius:var(--r-chip);
+  display:grid; place-items:center; font-variant-numeric:tabular-nums;
+}
+.proc h3{font-weight:600; font-size:16px; margin:5px 0 0; color:var(--ink); line-height:1.3}
+.proc p{margin:0; color:var(--body); font-size:13.8px; line-height:1.68}
+.proc strong{color:var(--ink); font-weight:600}
+.proc code{
+  font-family:var(--font-ui); background:var(--accent-soft); color:var(--accent);
+  border-radius:6px; padding:1px 7px; font-size:12.8px; font-weight:600; white-space:nowrap;
+}
+
+/* ------------------------------ footer ------------------------------ */
+.foot{border-top:1px solid var(--line); background:var(--paper); font-size:13px; color:var(--muted)}
+.foot .wrap{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:10px; padding-block:22px}
+.foot a{color:var(--accent); text-decoration:none; font-weight:600}
+.foot a:hover{text-decoration:underline}
+
+/* ---------------------------- frame view ---------------------------- */
+.frame-wrap{display:flex; flex-direction:column; flex:1; min-height:0}
+.frame-top{
+  display:flex; align-items:center; gap:12px; padding:11px clamp(14px,2.4vw,24px);
+  border-bottom:1px solid var(--line); background:var(--surface); flex:none;
+}
+.back-btn{
+  all:unset; box-sizing:border-box; cursor:pointer; display:flex; align-items:center; gap:7px;
+  font-family:var(--font-display); font-weight:600; font-size:13.5px; color:var(--body);
+  height:40px; padding:0 14px; border-radius:var(--r-ctl); border:1px solid var(--line);
+  transition:background .15s, color .15s;
+}
+.back-btn:hover{background:var(--paper); color:var(--ink)}
+.back-btn:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+.frame-top .ttl{font-family:var(--font-display); font-weight:600; font-size:14.5px; color:var(--ink);
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.frame-top .open{margin-inline-start:auto; display:flex; align-items:center; gap:5px; font-size:13px;
+  color:var(--accent); text-decoration:none; font-weight:600; flex:none}
+.frame-top .open:hover{text-decoration:underline}
+iframe{border:0; width:100%; flex:1; min-height:0; background:var(--surface)}
+@media (max-width:560px){ .frame-top .ttl{display:none} }
+
+.skip-link{
+  position:absolute; right:12px; top:-70px; z-index:999;
+  background:var(--accent); color:var(--accent-on); font-family:var(--font-display);
+  font-weight:600; font-size:13.5px; padding:11px 18px; border-radius:var(--r-ctl); text-decoration:none;
+  transition:top .15s;
+}
+.skip-link:focus{top:12px}
+</style>
+</head>
+<body>
+
+<a class="skip-link" href="#main-content">דלג לתוכן הראשי</a>
+
+<div class="shell">
+  <div class="side-scrim" id="scrim"></div>
+
+  <aside class="side" id="side">
+    <div class="side-top">
+      <div class="brand">
+        <span class="mark"><svg width="18" height="18" viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M9 22 L9 15 M16 22 L16 10 M23 22 L23 13" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/></svg></span>
+        <span><b>Ariel AI Hub</b><i>כלי עבודה ל-Power BI</i></span>
+      </div>
+      <button class="drawer-close" id="drawerClose" aria-label="סגור תפריט"><i data-lucide="x" style="width:18px;height:18px"></i></button>
+    </div>
+
+    <div class="rail-label">כלים</div>
+    <nav class="tools" id="nav" aria-label="ניווט בין הכלים"></nav>
+
+    <div class="rail-cta">
+      <b>סורק סקירת דוחות</b>
+      <p>חבילת ה-Skill להתקנה מקומית ב-Claude Code.</p>
+      <a class="dl-btn" href="powerbi-report-reviewer-scanner.zip" download><i data-lucide="download" style="width:15px;height:15px"></i> הורדת הסורק (ZIP)</a>
+    </div>
+
+    <div class="rail-cta rail-cta-secondary">
+      <b>מדריך Claude Desktop</b>
+      <p>מדריך חיצוני מקיף ל-Claude Desktop, Claude Code ו-Skills for Fabric מול Power BI.</p>
+      <a class="dl-btn" href="https://rkinstinct.github.io/claude-desktop-guide/" target="_blank" rel="noopener"><i data-lucide="external-link" style="width:15px;height:15px"></i> פתיחת המדריך</a>
+    </div>
+  </aside>
+
+  <main id="main-content">
+    <div class="mobile-topbar">
+      <button class="hamburger" id="hamburgerOpen" aria-label="פתח תפריט"><i data-lucide="menu" style="width:19px;height:19px"></i></button>
+      <b>Ariel AI Hub</b>
+    </div>
+
+    <!-- ============================ dashboard ============================ -->
+    <div class="view on" id="dash">
+
+      <section class="hero">
+        <div class="wrap">
+          <div class="hero-grid">
+            <div class="text">
+              <h1>כל כלי ה-Power BI של היחידה, <em>במקום אחד</em></h1>
+              <p class="lede">שישה כלים לעבודה מול Power BI: אפיון מפגשים, שימור ידע, קטלוג ויזואלים, סקירת דוחות ועדכוני AI שבועיים.</p>
+              <div class="cta-row">
+                <button class="btn btn-primary" id="ctaCatalog">
+                  <i data-lucide="bar-chart-3" style="width:17px;height:17px"></i> פתיחת קטלוג הוויזואלים
+                </button>
+                <a class="btn btn-ghost" href="powerbi-report-reviewer-scanner.zip" download>
+                  <i data-lucide="download" style="width:17px;height:17px"></i> הורדת הסורק (ZIP)
+                </a>
+              </div>
+            </div>
+
+            <div class="figures">
+              <div><b class="num">6</b><span>כלים וקטלוגים</span></div>
+              <div><b class="num">44</b><span>ויזואלים בקטלוג</span></div>
+              <div><b class="num">2</b><span>מדריכי התקנה</span></div>
+              <div><b class="num">4</b><span>נהלי עבודה</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="sec">
+        <div class="wrap">
+          <div class="sec-hd">
+            <h2>הכלים</h2>
+            <p>כל כרטיס נפתח כאן באתר, בלי לעזוב את העמוד.</p>
+          </div>
+          <div class="bento" id="cards"></div>
+        </div>
+      </section>
+
+      <section class="sec proc">
+        <div class="wrap">
+          <div class="sec-hd">
+            <h2>נהלי עבודה ביחידה</h2>
+            <p>ארבעה נהלים שחלים על כל דוח ועל כל מפגש מנהלים.</p>
+          </div>
+          <ol>
+            <li>
+              <h3>מצגת למפגש מנהלים</h3>
+              <p>לפני מפגש מנהלים יש להכין <strong>מצגת</strong> לפי <strong>תבנית אפיון למפגש</strong>. כל שמונת הסעיפים שלה, כולל שימור ידע על התהליכים והצגת הדשבורדים בפועל, הם חלק חובה. לאחר הכנת המצגת יש לקבוע עם <strong>ראובן</strong> פגישה <strong>בשבוע שלפני</strong> מפגש המנהלים, למעבר משותף ומסודר על המצגת ועל הדשבורדים.</p>
+            </li>
+            <li>
+              <h3>סקירה לפני הצגה להנהלה</h3>
+              <p>לפני שהדוח מוצג בפני הנהלה יש להריץ עליו את <strong>סוכן סקירת הדוחות</strong>, ולוודא ששיתפתם את <strong>ראובן</strong> ואת <strong>פנינית</strong> ב-Workspace / App של הדשבורדים שלכם ב-Power BI.</p>
+            </li>
+            <li>
+              <h3>שימור ידע ארגוני</h3>
+              <p>ידע על תהליכי היחידה יש לתעד ולשמר דרך <strong>בונה תיקים - שימור ידע</strong> באתר, כך שהתיעוד נשאר זמין ליחידה ולא תלוי באדם ספציפי.</p>
+            </li>
+            <li>
+              <h3>תבנית עיצוב אחידה ליחידה</h3>
+              <p>יש לקבוע מפגש עם מנהלי היחידה ולסכם קובץ <strong>theme JSON</strong> משותף אחד (Report Theme). ברגע שדוח טוען את הקובץ הזה (<code>Format &gt; Themes &gt; Browse for themes</code>), כל הוויזואלים בדוח מתעצבים מחדש אוטומטית לפי הצבעים והסגנון שמוגדרים בו, בלי לגעת בכל ויזואל בנפרד. התבנית צריכה לקבוע גם: היכן מופיעים <strong>כפתורי הסינון</strong> וכפתור <strong>איפוס הסינון</strong>, מיקום <strong>תפריט הניווט</strong> (אם יש), היכן מוצג <strong>תאריך העדכון האחרון</strong>, ה<strong>רקע</strong>, והיכן ממוקם <strong>הלוגו היחידתי</strong>, כך שכל דוח ביחידה ייראה ויתנהג אותו הדבר.</p>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <footer class="foot">
+        <div class="wrap">
+          <span>Ariel AI Hub · כלי עבודה ל-Power BI</span>
+        </div>
+      </footer>
+    </div>
+
+    <!-- ============================ frame view ============================ -->
+    <div class="view" id="frame-view">
+      <div class="frame-wrap">
+        <div class="frame-top">
+          <button class="back-btn"><i data-lucide="arrow-right" style="width:15px;height:15px"></i> חזרה לבית</button>
+          <span class="ttl" id="frame-title"></span>
+          <a class="open" id="frame-open" href="#" target="_blank" rel="noopener">פתיחה בטאב חדש <i data-lucide="external-link" style="width:13px;height:13px"></i></a>
+        </div>
+        <iframe id="frame" src="" title="תצוגת הכלי"></iframe>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+/* ---- tool registry. rail order preserved from the previous build. ---- */
+const tools = [
+  { id:'meeting-brief',       ic:'file-text',      title:'תבנית אפיון למפגש',       desc:'טופס מובנה למילוי בזמן מפגש אפיון: שדות, שאלות מנחות ומעקב מילוי חי לכל סעיף.',                     tag:'טופס אינטראקטיבי', src:'meeting-brief.html' },
+  { id:'knowledge-retention', ic:'folder-archive', title:'בונה תיקים - שימור ידע',   desc:'אשף מודרך לבניית תיק תיעוד ושימור ידע: בחירת סוג תיק, מילוי שלב-אחר-שלב ומדדי השלמה.',             tag:'אשף מודרך',        src:'knowledge-retention.html' },
+  { id:'mcp-guide',           ic:'plug-zap',       title:'Power BI MCP ללא Node',    desc:'מדריך התקנה מלא לשרת ה-MCP של Power BI ב-Windows, ללא הרשאות אדמין וללא Node.js.',                 tag:'מדריך התקנה',      src:'mcp-guide.html' },
+  { id:'scanner-guide',       ic:'shield-check',   title:'מדריך התקנה לסורק הדוחות', desc:'איך להתקין ולהפעיל את ה-Skill שסוקר דוחות Power BI ומחזיר דוח ביקורת מסודר בעברית.',               tag:'מדריך התקנה',      src:'scanner-guide.html' },
+  { id:'html-catalog',        ic:'bar-chart-3',    title:'קטלוג ויזואלי Power BI',   desc:'גרסת HTML חיה לכל ויזואל מובנה של Power BI, עם נתוני דוגמה, תגובה לסלייסר ופאנל סגנון להעתקת DAX.', tag:'קטלוג חי',         src:'html-catalog.html' },
+  { id:'data-ai-corner',      ic:'brain',          title:'פינת DATA&AI',             desc:'ארכיון העדכונים השבועיים: כלים וטיפים חדשים בעולמות ה-Power BI וה-AI, לפי תאריך.',                 tag:'ארכיון שבועי',     src:'data-ai-corner.html' },
+];
+const byId = id => tools.find(t => t.id === id);
+
+/* Bento: 4-col grid, 2 uniform columns of 2.
+   row1: feature(rows 1-2) + 1 cell · row2: feature + 1 cell · row3-4: 2 cells each.
+   Exactly 8 cells for 6 tools + 1 download. No empty cell. */
+const layout = [
+  { id:'html-catalog',        cls:'feature' },
+  { id:'meeting-brief',       cls:'s2' },
+  { id:'knowledge-retention', cls:'s2' },
+  { id:'mcp-guide',           cls:'s2' },
+  { id:'scanner-guide',       cls:'s2' },
+  { id:'data-ai-corner',      cls:'s2' },
+];
+
+const nav   = document.getElementById('nav');
+const cards = document.getElementById('cards');
+
+/* ---- rail nav ---- */
+tools.forEach(t => {
+  const b = document.createElement('button');
+  b.id = 'nav-' + t.id;
+  b.innerHTML = `<span class="ic"><i data-lucide="${t.ic}" style="width:14px;height:14px"></i></span><span class="lbl">${t.title}</span>`;
+  b.addEventListener('click', () => openTool(t));
+  nav.appendChild(b);
+});
+
+/* ---- bento ---- */
+const tagMarkup = t => `<div class="tags"><span class="tag">${t.tag}</span></div>`;
+
+layout.forEach(({ id, cls }) => {
+  const t = byId(id);
+  const card = document.createElement('button');
+  card.type = 'button';
+  card.className = `card reveal ${cls}`;
+  card.setAttribute('aria-label', `${t.title}. ${t.tag}`);
+
+  card.innerHTML = cls === 'feature'
+    ? `<div class="hdr">
+         <div class="ic"><i data-lucide="${t.ic}" style="width:20px;height:20px"></i></div>
+         <div class="big"><span class="num">44</span><small>ויזואלים מובנים, חיים בדפדפן</small></div>
+       </div>
+       <div class="body">
+         <div class="row"><h3>${t.title}</h3><div class="go"><i data-lucide="arrow-left" style="width:14px;height:14px"></i></div></div>
+         <p>${t.desc}</p>
+         ${tagMarkup(t)}
+       </div>`
+    : `<div class="body">
+         <div class="row">
+           <div class="ic"><i data-lucide="${t.ic}" style="width:18px;height:18px"></i></div>
+           <div class="go"><i data-lucide="arrow-left" style="width:14px;height:14px"></i></div>
+         </div>
+         <h3>${t.title}</h3>
+         <p>${t.desc}</p>
+         ${tagMarkup(t)}
+       </div>`;
+
+  card.addEventListener('click', () => openTool(t));
+  cards.appendChild(card);
+});
+
+/* download-only cell: a file, not a page. rendered as a link, never framed. */
+const zip = document.createElement('a');
+zip.className = 'card zip reveal s2';
+zip.href = 'powerbi-report-reviewer-scanner.zip';
+zip.setAttribute('download', '');
+zip.innerHTML = `
+  <div class="body">
+    <div class="row">
+      <div class="ic"><i data-lucide="package" style="width:18px;height:18px"></i></div>
+      <div class="go"><i data-lucide="download" style="width:14px;height:14px"></i></div>
+    </div>
+    <h3>סורק סקירת דוחות (ZIP)</h3>
+    <p>חבילת ה-Skill המלאה להתקנה מקומית ב-Claude Code או ב-Cowork.</p>
+    <div class="tags"><span class="tag outline">הורדה בלבד</span></div>
+  </div>`;
+cards.appendChild(zip);
+
+/* ---- cursor-tracked border highlight (pointer feedback) ---- */
+cards.addEventListener('pointermove', e => {
+  const card = e.target.closest('.card');
+  if (!card) return;
+  const r = card.getBoundingClientRect();
+  card.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+  card.style.setProperty('--my', (e.clientY - r.top)  + 'px');
+});
+
+/* ---- scroll reveal: IntersectionObserver, no scroll listener ---- */
+const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+if (!reduce.matches && 'IntersectionObserver' in window) {
+  const io = new IntersectionObserver((entries, obs) => {
+    entries.forEach(en => {
+      if (!en.isIntersecting) return;
+      const sibs = [...en.target.parentElement.children];
+      en.target.style.transitionDelay = Math.min(sibs.indexOf(en.target), 7) * 50 + 'ms';
+      en.target.classList.add('in');
+      obs.unobserve(en.target);
+    });
+  }, { threshold: .1, rootMargin: '0px 0px -6% 0px' });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+} else {
+  document.querySelectorAll('.reveal').forEach(el => el.classList.add('in'));
+}
+
+/* ---- icons ---- */
+function renderIcons(){ if (window.lucide) lucide.createIcons(); }
+if (document.readyState !== 'loading') renderIcons();
+document.addEventListener('DOMContentLoaded', renderIcons);
+window.addEventListener('load', renderIcons);
+
+/* ---- routing between dashboard and framed tool ---- */
+function openTool(t){
+  document.getElementById('dash').classList.remove('on');
+  document.getElementById('frame-view').classList.add('on');
+  document.getElementById('frame').src = t.src;
+  document.getElementById('frame-title').textContent = t.title;
+  document.getElementById('frame-open').href = t.src;
+  document.querySelectorAll('nav.tools button').forEach(b => b.classList.remove('on'));
+  document.getElementById('nav-' + t.id).classList.add('on');
+  closeDrawer();
+}
+function showDash(){
+  document.getElementById('frame-view').classList.remove('on');
+  document.getElementById('dash').classList.add('on');
+  document.getElementById('frame').src = '';
+  document.querySelectorAll('nav.tools button').forEach(b => b.classList.remove('on'));
+}
+document.querySelector('.back-btn').addEventListener('click', showDash);
+document.getElementById('ctaCatalog').addEventListener('click', () => openTool(byId('html-catalog')));
+
+/* ---- mobile drawer ---- */
+const sideEl  = document.getElementById('side');
+const scrimEl = document.getElementById('scrim');
+function openDrawer(){ sideEl.classList.add('open'); scrimEl.classList.add('on'); }
+function closeDrawer(){ sideEl.classList.remove('open'); scrimEl.classList.remove('on'); }
+document.getElementById('hamburgerOpen').addEventListener('click', openDrawer);
+document.getElementById('drawerClose').addEventListener('click', closeDrawer);
+scrimEl.addEventListener('click', closeDrawer);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
+</script>
+
+</body>
+</html>
