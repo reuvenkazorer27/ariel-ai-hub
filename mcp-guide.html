@@ -30,7 +30,7 @@
   @media (max-width:640px){ .page{padding:44px 20px 72px} }
 
   .eyebrow{
-    font-family:var(--font-display); font-size:12px; font-weight:700; letter-spacing:.09em;
+    font-family:var(--font-display); font-size:12px; font-weight:700; letter-spacing:.04em;
     color:var(--accent-ink); margin:0 0 14px;
   }
   h1{
@@ -143,7 +143,7 @@
 
   <p class="eyebrow">מדריך התקנה · Windows · ללא הרשאות אדמין</p>
   <h1>Power BI MCP בלי Node.js</h1>
-  <p class="lede">שרת ה‑MCP של מיקרוסופט למודלים סמנטיים נארז כקובץ הרצה מקומפל. Node נדרש רק למסלול ה‑NPX — אפשר לעקוף אותו לגמרי בהורדה ידנית של החבילה. המדריך מכסה את שרשרת העבודה המלאה: התקנת השרת, חיבורו ל‑Claude, הוספת הסקילים של Power BI, ועבודה שוטפת מול קובץ PBIP.</p>
+  <p class="lede">שרת ה‑MCP של מיקרוסופט למודלים סמנטיים נארז כקובץ הרצה מקומפל. Node נדרש רק למסלול ה‑NPX - אפשר לעקוף אותו לגמרי בהורדה ידנית של החבילה. המדריך מכסה את שרשרת העבודה המלאה: התקנת השרת, חיבורו ל‑Claude, הוספת הסקילים של Power BI, ועבודה שוטפת מול קובץ PBIP.</p>
 
   <hr class="rule">
 
@@ -155,7 +155,7 @@
   </nav>
 
   <h2 id="why">למה זה עובד בלי Node</h2>
-  <p>התיעוד הרשמי פותח ב‑<code>npx</code>, ומשם קל להסיק ש‑Node הוא תנאי סף. הוא לא. חבילת ה‑NPX רק מורידה ומריצה בינארי מוכן — ואת אותו בינארי אפשר להשיג ישירות מה‑Marketplace. הוא <code>.exe</code> עצמאי שמדבר stdio מול לקוח ה‑MCP.</p>
+  <p>התיעוד הרשמי פותח ב‑<code>npx</code>, ומשם קל להסיק ש‑Node הוא תנאי סף. הוא לא. חבילת ה‑NPX רק מורידה ומריצה בינארי מוכן - ואת אותו בינארי אפשר להשיג ישירות מה‑Marketplace. הוא <code>.exe</code> עצמאי שמדבר stdio מול לקוח ה‑MCP.</p>
 
   <div class="note ok">
     <span class="tag">מה שנדרש בפועל</span>
@@ -164,20 +164,20 @@
 
   <div class="note ok">
     <span class="tag">אפס הרשאות אדמין</span>
-    <p>כל מה שמתואר במדריך הזה — ההורדה, החילוץ, עריכת קובץ הקונפיגורציה, שכפול המאגר והוספת הסקילים — מתבצע בתוך תיקיית המשתמש ואינו דורש הרשאות מנהל. זו בדיוק הסיבה להימנע מ‑Node: התקנת Node דרך <code>winget</code> או המתקין הרשמי היא הצעד היחיד בשרשרת שכן היה דורש אדמין.</p>
+    <p>כל מה שמתואר במדריך הזה - ההורדה, החילוץ, עריכת קובץ הקונפיגורציה, שכפול המאגר והוספת הסקילים - מתבצע בתוך תיקיית המשתמש ואינו דורש הרשאות מנהל. זו בדיוק הסיבה להימנע מ‑Node: התקנת Node דרך <code>winget</code> או המתקין הרשמי היא הצעד היחיד בשרשרת שכן היה דורש אדמין.</p>
   </div>
 
   <p class="part" id="part-a">חלק א׳</p>
   <h2>התקנת שרת ה‑MCP</h2>
-  <p>זהו התנאי המקדים לכל השאר. <strong>קודם מתקינים ורושמים את שרת ה‑MCP</strong> — רק אחר כך מוסיפים את הסקילים ומתחילים לעבוד. סקיל שמנסה לפנות לשרת שלא רשום ייכשל בשקט.</p>
+  <p>זהו התנאי המקדים לכל השאר. <strong>קודם מתקינים ורושמים את שרת ה‑MCP</strong> - רק אחר כך מוסיפים את הסקילים ומתחילים לעבוד. סקיל שמנסה לפנות לשרת שלא רשום ייכשל בשקט.</p>
 
   <ol class="steps">
     <li>
       <h3>הדבק את הכתובת בדפדפן</h3>
       <p>אין כאן שום סקריפט ואין דף הורדות. מדביקים כתובת אחת בשורת הכתובת של הדפדפן, מקישים Enter, וההורדה מתחילה אוטומטית.</p>
-      <p>זו הכתובת להעתקה — הפורמט המתאים, גרסה <code>0.1.9</code> לפלטפורמת <code>win32-x64</code>:</p>
+      <p>זו הכתובת להעתקה - הפורמט המתאים, גרסה <code>0.1.9</code> לפלטפורמת <code>win32-x64</code>:</p>
 <pre dir="ltr"><code>https://marketplace.visualstudio.com/_apis/public/gallery/publishers/analysis-services/vsextensions/powerbi-modeling-mcp/0.1.9/vspackage?targetPlatform=win32-x64</code></pre>
-      <p>המבנה הכללי, למי שרוצה גרסה או פלטפורמה אחרות — מחליפים רק את שני הערכים בסוגריים:</p>
+      <p>המבנה הכללי, למי שרוצה גרסה או פלטפורמה אחרות - מחליפים רק את שני הערכים בסוגריים:</p>
 <pre dir="ltr"><code>https://marketplace.visualstudio.com/_apis/public/gallery/publishers
 /analysis-services/vsextensions/powerbi-modeling-mcp/[version]
 /vspackage?targetPlatform=[platform]</code></pre>
@@ -185,8 +185,8 @@
     </li>
 
     <li>
-      <h3>שנה את שם הקובץ בתיקייה — סיומת <code>.zip</code></h3>
-      <p>קובץ VSIX הוא ארכיון ZIP רגיל עם סיומת אחרת. בתיקיית ההורדות: לחיצה ימנית על הקובץ ← <em>Rename</em> ← החלף את הסיומת <code>.vsix</code> ב‑<code>.zip</code>. Windows ישאל אם אתה בטוח — אשר.</p>
+      <h3>שנה את שם הקובץ בתיקייה - סיומת <code>.zip</code></h3>
+      <p>קובץ VSIX הוא ארכיון ZIP רגיל עם סיומת אחרת. בתיקיית ההורדות: לחיצה ימנית על הקובץ ← <em>Rename</em> ← החלף את הסיומת <code>.vsix</code> ב‑<code>.zip</code>. Windows ישאל אם אתה בטוח - אשר.</p>
       <p class="cap">לא רואה סיומות? ב‑Explorer: לשונית <em>View</em> ← סמן <em>File name extensions</em>.</p>
     </li>
 
@@ -194,14 +194,14 @@
       <h3>חלץ ידנית לתיקייה לבחירתך</h3>
       <p>לחיצה ימנית על ה‑ZIP ← <em>Extract All</em> ← בחר יעד, למשל:</p>
 <pre dir="ltr"><code>C:\MCPServers\PowerBIModelingMCP</code></pre>
-      <p class="cap">בלי סקריפט ובלי כלי חיצוני — החילוץ המובנה של Windows מספיק.</p>
+      <p class="cap">בלי סקריפט ובלי כלי חיצוני - החילוץ המובנה של Windows מספיק.</p>
     </li>
 
     <li>
       <h3>הרץ פעם אחת לאימות</h3>
       <p>הפעל את קובץ ההרצה שחולץ:</p>
 <pre dir="ltr"><code>C:\MCPServers\PowerBIModelingMCP\extension\server\powerbi-modeling-mcp.exe</code></pre>
-      <p>הרצה ללא ארגומנטים מדפיסה לקונסולה את בלוק ה‑JSON לרישום. אם הבלוק מודפס — הבינארי תקין ומוכן.</p>
+      <p>הרצה ללא ארגומנטים מדפיסה לקונסולה את בלוק ה‑JSON לרישום. אם הבלוק מודפס - הבינארי תקין ומוכן.</p>
       <div class="note">
         <p>שים לב לרובד <code>extension\</code> בתוך הנתיב. הוא קיים בדיוק כי חילצנו את ה‑VSIX ידנית, וה‑ZIP עצמו מכיל תיקיית <code>extension</code> בשורשו.</p>
       </div>
@@ -212,13 +212,13 @@
       <p>העתק את הבלוק שהודפס בקונסולה. ב‑Claude, פתח את קובץ הקונפיגורציה דרך המסלול הזה:</p>
       <p><strong>Customize</strong> ← <strong>Developer</strong> ← <strong>Edit Config</strong></p>
       <p>הקובץ ייפתח בעורך טקסט. הוסף לתוכו את הבלוק ושמור.</p>
-      <p class="cap">זה אותו קובץ שיושב ב‑<code>%APPDATA%\Claude\claude_desktop_config.json</code> — פשוט בלי לחפש אותו ידנית.</p>
+      <p class="cap">זה אותו קובץ שיושב ב‑<code>%APPDATA%\Claude\claude_desktop_config.json</code> - פשוט בלי לחפש אותו ידנית.</p>
     </li>
   </ol>
 
   <div class="note warn">
     <span class="tag">מלכודת העטיפה</span>
-    <p>קטע ה‑JSON בתיעוד הרשמי מתחיל ישירות ב‑<code>"powerbi-modeling-mcp"</code> בלי מפתח עוטף. הלקוחות דורשים <code>mcpServers</code> סביבו. הדבקה של הקטע כמו שהוא תיטען בלי שגיאה ובלי כלים — וזו התקלה הכי קשה לאבחון בכל התהליך.</p>
+    <p>קטע ה‑JSON בתיעוד הרשמי מתחיל ישירות ב‑<code>"powerbi-modeling-mcp"</code> בלי מפתח עוטף. הלקוחות דורשים <code>mcpServers</code> סביבו. הדבקה של הקטע כמו שהוא תיטען בלי שגיאה ובלי כלים - וזו התקלה הכי קשה לאבחון בכל התהליך.</p>
   </div>
 
   <p>כך זה צריך להיראות בפועל:</p>
@@ -232,9 +232,9 @@
     }
   }
 }</code></pre>
-  <p class="cap">החלף את הנתיב בנתיב האמיתי אצלך — זה שהרצת בשלב 4.</p>
+  <p class="cap">החלף את הנתיב בנתיב האמיתי אצלך - זה שהרצת בשלב 4.</p>
 
-  <h2>סגור את Claude לגמרי — כולל במנהל המשימות</h2>
+  <h2>סגור את Claude לגמרי - כולל במנהל המשימות</h2>
   <p>Claude קורא את קובץ הקונפיגורציה רק בעליית התהליך. סגירת החלון <strong>אינה</strong> סוגרת את התהליך: Claude Desktop ממשיך לרוץ ברקע, ולכן העריכה שביצעת פשוט לא תיטען, והכלים לא יופיעו.</p>
   <ol class="plain">
     <li>סגור את חלון היישום.</li>
@@ -243,16 +243,16 @@
   </ol>
   <p>מי שמעדיף פקודה אחת במקום מנהל המשימות:</p>
 <pre dir="ltr"><code>Get-Process Claude -ErrorAction SilentlyContinue | Stop-Process -Force</code></pre>
-  <p class="cap">ב‑Claude Code בטרמינל — יציאה מהסשן והרצה מחדש מספיקה.</p>
+  <p class="cap">ב‑Claude Code בטרמינל - יציאה מהסשן והרצה מחדש מספיקה.</p>
 
   <p class="part" id="part-b">חלק ב׳</p>
   <h2>הוספת הסקילים של Power BI</h2>
-  <p>שרת ה‑MCP נותן את הכלים. הסקילים נותנים את הידע — איך לבנות דוח PBIR תקין, איך לתכנן מודל סמנטי, מה הכללים של כל פורמט. מיקרוסופט מפרסמת אותם במאגר פתוח.</p>
+  <p>שרת ה‑MCP נותן את הכלים. הסקילים נותנים את הידע - איך לבנות דוח PBIR תקין, איך לתכנן מודל סמנטי, מה הכללים של כל פורמט. מיקרוסופט מפרסמת אותם במאגר פתוח.</p>
 
   <ol class="steps">
     <li>
       <h3>שכפל את המאגר</h3>
-      <p>המאגר הוא <a href="https://github.com/microsoft/skills-for-fabric">microsoft/skills-for-fabric</a>. שכפול לתיקייה זמנית — לא לתיקיית העבודה:</p>
+      <p>המאגר הוא <a href="https://github.com/microsoft/skills-for-fabric">microsoft/skills-for-fabric</a>. שכפול לתיקייה זמנית - לא לתיקיית העבודה:</p>
 <pre dir="ltr"><code>git clone --depth 1 https://github.com/microsoft/skills-for-fabric.git `
   "$env:TEMP\skills-for-fabric"</code></pre>
       <p class="cap">אין git? הורד ZIP מכפתור <em>Code</em> בדף המאגר וחלץ לאותו מקום.</p>
@@ -260,7 +260,7 @@
 
     <li>
       <h3>העתק רק את הסקילים של Power BI</h3>
-      <p>המאגר מכיל עשרות סקילים לכל שירותי Fabric — Spark, Eventstream, מיגרציות ועוד. רובם לא רלוונטיים, וכל סקיל מיותר גוזל הקשר ומבלבל את המודל בבחירה. קח את חמשת הסקילים של Power BI בלבד:</p>
+      <p>המאגר מכיל עשרות סקילים לכל שירותי Fabric - Spark, Eventstream, מיגרציות ועוד. רובם לא רלוונטיים, וכל סקיל מיותר גוזל הקשר ומבלבל את המודל בבחירה. קח את חמשת הסקילים של Power BI בלבד:</p>
 <pre dir="ltr"><code>$src  = "$env:TEMP\skills-for-fabric\skills"
 $dest = ".\.claude\skills"          # מתוך תיקיית הפרויקט שלך
 
@@ -293,7 +293,7 @@ Get-ChildItem $dest -Directory | Select-Object -ExpandProperty Name</code></pre>
 
     <li>
       <h3>הוסף קובץ MD שמחייב שימוש בסקילים</h3>
-      <p>Claude לא תמיד טורח לטעון סקיל מיוזמתו — הוא עלול לנחש תשובה ולערוך JSON ידנית במקום. קובץ <code>CLAUDE.md</code> בשורש תיקיית העבודה נטען אוטומטית בכל סשן והופך את זה לכלל מחייב:</p>
+      <p>Claude לא תמיד טורח לטעון סקיל מיוזמתו - הוא עלול לנחש תשובה ולערוך JSON ידנית במקום. קובץ <code>CLAUDE.md</code> בשורש תיקיית העבודה נטען אוטומטית בכל סשן והופך את זה לכלל מחייב:</p>
 <pre dir="ltr"><code># Power BI workspace rules
 
 ## Skills are mandatory, not optional
@@ -317,7 +317,7 @@ Rules:
 - Do not close and reopen the PBIP file after edits.
   Use "Apply external changes" in Power BI Desktop instead.
 
-## RTL and Hebrew — non-negotiable
+## RTL and Hebrew - non-negotiable
 
 This report is Hebrew. RTL is not a finishing touch, it is a
 requirement on every object you create or edit.
@@ -337,26 +337,26 @@ DAX note: VAR identifiers must be English. A Hebrew VAR name
 fails with "Invalid token" and silently returns an empty column,
 with no visible error in the UI.
 </code></pre>
-      <p class="cap">שמור בשם <code>CLAUDE.md</code> בשורש התיקייה — לצד תיקיית <code>.claude</code>.</p>
+      <p class="cap">שמור בשם <code>CLAUDE.md</code> בשורש התיקייה - לצד תיקיית <code>.claude</code>.</p>
     </li>
   </ol>
 
   <div class="note warn">
     <span class="tag">שתי סקילים לא יעבדו במלואן בלי Node</span>
-    <p><strong>powerbi-report-authoring</strong> ו‑<strong>powerbi-report-planning</strong> נשענות על שני כלי CLI שמופצים כחבילות npm ודורשים Node 20 ומעלה — <code>powerbi-report-author</code> לאימות סכימת PBIR, ו‑<code>powerbi-desktop</code> ללולאת הצילום והרינדור. בלי Node עדיין אפשר לערוך PBIR ידנית, אבל בלי אימות סכימה ובלי צילום מסך אוטומטי.</p>
-    <p>שלוש הסקילים האחרות — <code>semantic-model-authoring</code>, <code>powerbi-report-design</code> ו‑<code>powerbi-report-management</code> — עובדות במלואן בלי Node. וכל מה שתואר עד כאן במדריך, כולל שתיהן במצב הידני, לא דורש הרשאות אדמין.</p>
+    <p><strong>powerbi-report-authoring</strong> ו‑<strong>powerbi-report-planning</strong> נשענות על שני כלי CLI שמופצים כחבילות npm ודורשים Node 20 ומעלה - <code>powerbi-report-author</code> לאימות סכימת PBIR, ו‑<code>powerbi-desktop</code> ללולאת הצילום והרינדור. בלי Node עדיין אפשר לערוך PBIR ידנית, אבל בלי אימות סכימה ובלי צילום מסך אוטומטי.</p>
+    <p>שלוש הסקילים האחרות - <code>semantic-model-authoring</code>, <code>powerbi-report-design</code> ו‑<code>powerbi-report-management</code> - עובדות במלואן בלי Node. וכל מה שתואר עד כאן במדריך, כולל שתיהן במצב הידני, לא דורש הרשאות אדמין.</p>
   </div>
 
   <p class="part" id="part-c">חלק ג׳</p>
-  <h2>עבודה שוטפת — שמור כ‑PBIP</h2>
-  <p>קובץ <code>.pbix</code> הוא ארכיון בינארי סגור. Claude לא יכול לקרוא או לערוך אותו. פורמט <code>.pbip</code> חושף את אותו תוכן כתיקייה של קבצי טקסט — TMDL למודל, PBIR לדוח — וזה מה שהופך את כל השרשרת לאפשרית.</p>
+  <h2>עבודה שוטפת - שמור כ‑PBIP</h2>
+  <p>קובץ <code>.pbix</code> הוא ארכיון בינארי סגור. Claude לא יכול לקרוא או לערוך אותו. פורמט <code>.pbip</code> חושף את אותו תוכן כתיקייה של קבצי טקסט - TMDL למודל, PBIR לדוח - וזה מה שהופך את כל השרשרת לאפשרית.</p>
 
   <ol class="steps">
     <li>
       <h3>שמור את קובץ ה‑Power BI כ‑PBIP</h3>
-      <p>ב‑Power BI Desktop: <em>File</em> ← <em>Save as</em> ← בבורר סוג הקובץ בחר <strong>Power BI project (*.pbip)</strong>. שמור אל תוך תיקיית הפרויקט — אותה תיקייה שבה יושבים <code>CLAUDE.md</code> ו‑<code>.claude</code>.</p>
+      <p>ב‑Power BI Desktop: <em>File</em> ← <em>Save as</em> ← בבורר סוג הקובץ בחר <strong>Power BI project (*.pbip)</strong>. שמור אל תוך תיקיית הפרויקט - אותה תיקייה שבה יושבים <code>CLAUDE.md</code> ו‑<code>.claude</code>.</p>
       <p>אם האפשרות לא מופיעה בבורר: <em>File</em> ← <em>Options and settings</em> ← <em>Options</em> ← <em>Preview features</em>, סמן את אפשרות השמירה כ‑‎<code>.pbip</code>‎ ואת אחסון המודל בפורמט TMDL, והפעל מחדש את Desktop.</p>
-      <p class="cap">התוצאה היא קובץ <code>.pbip</code> קטן לצד תיקיות <code>.SemanticModel</code> ו‑<code>.Report</code> — כולן טקסט קריא.</p>
+      <p class="cap">התוצאה היא קובץ <code>.pbip</code> קטן לצד תיקיות <code>.SemanticModel</code> ו‑<code>.Report</code> - כולן טקסט קריא.</p>
     </li>
 
     <li>
@@ -364,7 +364,7 @@ with no visible error in the UI.
       <p>השאר את הקובץ פתוח ב‑Power BI Desktop, פתח את Claude בתיקיית הפרויקט, וכתוב לו בדיוק את זה:</p>
 <pre dir="ltr"><code>תתחבר לקובץ &lt;שם הקובץ&gt; שפתוח ב-Power BI Desktop
 ותעדכן אותי שהצלחת.</code></pre>
-      <p>תשובה תקינה כוללת אישור חיבור עם פרטי המופע המקומי — מזהה תהליך, פורט, ומחרוזת חיבור:</p>
+      <p>תשובה תקינה כוללת אישור חיבור עם פרטי המופע המקומי - מזהה תהליך, פורט, ומחרוזת חיבור:</p>
 <pre dir="ltr"><code>{
   "success": true,
   "data": [{
@@ -375,35 +375,35 @@ with no visible error in the UI.
     "parentWindowTitle": "&lt;your file&gt;"
   }]
 }</code></pre>
-      <p>אם קיבלת את האישור — הכל מחובר. מכאן זמינות קריאת מטא‑דאטה, יצירת מדדים, שאילתות DAX ועריכת TMDL ו‑PBIR.</p>
+      <p>אם קיבלת את האישור - הכל מחובר. מכאן זמינות קריאת מטא‑דאטה, יצירת מדדים, שאילתות DAX ועריכת TMDL ו‑PBIR.</p>
       <p class="cap">לא קיבלת אישור? חזור לחלק א׳: ודא שה‑JSON עטוף ב‑<code>mcpServers</code>, ושסגרת את Claude סגירה מלאה כולל במנהל המשימות.</p>
     </li>
 
     <li>
-      <h3>אחרי כל שינוי — Apply external changes</h3>
+      <h3>אחרי כל שינוי - Apply external changes</h3>
       <p>כש‑Claude כותב לקבצים על הדיסק, Power BI Desktop מזהה את השינוי ומציג פס התראה בראש החלון עם הכפתור <strong>Apply external changes</strong>. לחץ עליו. זהו.</p>
       <div class="note ok">
         <span class="tag">אל תסגור ואל תפתח מחדש</span>
-        <p>סגירה ופתיחה של הקובץ אחרי כל עריכה היא ההרגל שהכי שובר את התהליך: Power BI Desktop מקצה פורט אקראי חדש בכל פתיחה, ולכן החיבור של ה‑MCP נופל וצריך לחבר מחדש בכל סבב. <em>Apply external changes</em> טוען את השינוי בתוך אותו מופע — הפורט נשמר, החיבור חי, ואפשר להמשיך ברצף.</p>
+        <p>סגירה ופתיחה של הקובץ אחרי כל עריכה היא ההרגל שהכי שובר את התהליך: Power BI Desktop מקצה פורט אקראי חדש בכל פתיחה, ולכן החיבור של ה‑MCP נופל וצריך לחבר מחדש בכל סבב. <em>Apply external changes</em> טוען את השינוי בתוך אותו מופע - הפורט נשמר, החיבור חי, ואפשר להמשיך ברצף.</p>
       </div>
     </li>
 
     <li>
       <h3>עצור וצלם מסך אחרי כל שינוי</h3>
-      <p>זהו הפיצוי הישיר על מה שחסר בלי Node. סקיל האימות וסקיל צילום המסך הם שסוגרים בדרך כלל את הלולאה — הם מריצים בדיקת סכימה על הדוח ומחזירים ל‑Claude תמונה של התוצאה, כך שהוא רואה בעצמו מה יצא ומתקן. בלי Node שתי היכולות האלה לא זמינות, ו‑Claude עובד עיוור.</p>
-      <p>לכן, למי שלא הצליח להתקין Node — זו שגרת העבודה המומלצת:</p>
+      <p>זהו הפיצוי הישיר על מה שחסר בלי Node. סקיל האימות וסקיל צילום המסך הם שסוגרים בדרך כלל את הלולאה - הם מריצים בדיקת סכימה על הדוח ומחזירים ל‑Claude תמונה של התוצאה, כך שהוא רואה בעצמו מה יצא ומתקן. בלי Node שתי היכולות האלה לא זמינות, ו‑Claude עובד עיוור.</p>
+      <p>לכן, למי שלא הצליח להתקין Node - זו שגרת העבודה המומלצת:</p>
       <ol class="plain">
         <li>Claude מבצע שינוי בקבצים.</li>
         <li>לחץ <em>Apply external changes</em> ב‑Desktop.</li>
-        <li><strong>עצור</strong> — צלם מסך של הדוח (<code>Win+Shift+S</code>).</li>
+        <li><strong>עצור</strong> - צלם מסך של הדוח (<code>Win+Shift+S</code>).</li>
         <li>הדבק את הצילום ב‑Claude וכתוב מה לתקן.</li>
       </ol>
-      <p>הצילום הידני הוא בדיוק מה שהסקיל היה מספק אוטומטית. עדיף סבב אחד עם תמונה מאשר שלושה סבבים של ניחושים — במיוחד בבדיקת RTL, יישור כותרות ועברית בוויזואלים, שם רק העין תופסת את הבעיה.</p>
+      <p>הצילום הידני הוא בדיוק מה שהסקיל היה מספק אוטומטית. עדיף סבב אחד עם תמונה מאשר שלושה סבבים של ניחושים - במיוחד בבדיקת RTL, יישור כותרות ועברית בוויזואלים, שם רק העין תופסת את הבעיה.</p>
     </li>
   </ol>
 
   <footer>
-    מבוסס על התקנה שנבדקה בפועל — Windows, פלטפורמת win32-x64, ללא Node.js וללא הרשאות מנהל.
+    מבוסס על התקנה שנבדקה בפועל - Windows, פלטפורמת win32-x64, ללא Node.js וללא הרשאות מנהל.
   </footer>
 
 </div>

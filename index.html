@@ -58,7 +58,7 @@ svg.lucide{display:block}
 .side::before{
   content:""; position:absolute; inset:0; pointer-events:none;
   background:
-    radial-gradient(80% 46% at 100% 0%, rgba(124,58,237,.30), transparent 62%),
+    radial-gradient(80% 46% at 100% 0%, rgba(79,70,229,.30), transparent 62%),
     radial-gradient(70% 42% at 0% 100%, rgba(79,70,229,.22), transparent 64%);
 }
 .side > *{position:relative; z-index:1}
@@ -67,8 +67,8 @@ svg.lucide{display:block}
 .brand{display:flex; align-items:center; gap:11px; min-width:0}
 .brand .mark{
   width:36px; height:36px; border-radius:var(--r-chip); flex:none; display:grid; place-items:center;
-  background:linear-gradient(140deg,#6366F1,#8B5CF6); color:#fff;
-  box-shadow:0 6px 16px -6px rgba(124,58,237,.8), inset 0 1px 0 rgba(255,255,255,.35);
+  background:linear-gradient(140deg,#6366F1,#4F46E5); color:#fff;
+  box-shadow:0 2px 6px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.35);
 }
 .brand b{font-family:var(--font-display); font-weight:700; font-size:16px; letter-spacing:-.01em; color:#fff}
 .brand i{display:block; font-style:normal; font-size:11.5px; color:var(--d-dim); font-weight:500; margin-top:-2px}
@@ -87,7 +87,7 @@ nav.tools button{
 }
 nav.tools button:hover{background:rgba(255,255,255,.07); color:#fff}
 nav.tools button:focus-visible{outline:2px solid #A5ABFF; outline-offset:2px}
-nav.tools button.on{background:var(--accent); color:var(--accent-on); font-weight:600; box-shadow:0 6px 18px -6px rgba(79,70,229,.7)}
+nav.tools button.on{background:var(--accent); color:var(--accent-on); font-weight:600; box-shadow:0 2px 6px rgba(0,0,0,.35)}
 nav.tools button .ic{
   width:26px; height:26px; border-radius:8px; background:rgba(255,255,255,.07);
   display:grid; place-items:center; flex:none; transition:background .16s;
@@ -106,7 +106,7 @@ nav.tools button .lbl{overflow:hidden; text-overflow:ellipsis; white-space:nowra
   font-family:var(--font-display); font-weight:600; font-size:13.5px;
   text-decoration:none; border-radius:var(--r-ctl); padding:11px 14px;
   box-shadow:0 4px 14px -4px rgba(0,0,0,.45);
-  transition:transform .18s var(--ease), box-shadow .18s var(--ease);
+  transition:transform .22s var(--out-expo), box-shadow .22s var(--out-expo);
 }
 .dl-btn:hover{transform:translateY(-2px); box-shadow:0 10px 22px -6px rgba(0,0,0,.5)}
 .dl-btn:active{transform:translateY(0) scale(.98)}
@@ -130,10 +130,10 @@ nav.tools button .lbl{overflow:hidden; text-overflow:ellipsis; white-space:nowra
   .mobile-topbar{display:flex}
   .side{
     position:fixed; top:0; bottom:0; right:0; width:min(318px,86vw);
-    transform:translateX(100%); transition:transform .28s var(--ease);
+    transform:translateX(100%); transition:transform .24s var(--out-expo);
     box-shadow:-24px 0 60px -24px rgba(0,0,0,.6);
   }
-  .side.open{transform:translateX(0)}
+  .side.open{transform:translateX(0); transition-duration:.42s}
   .side-scrim{display:block}
   .drawer-close{display:grid; place-items:center; all:unset; cursor:pointer; width:42px; height:42px;
     border-radius:var(--r-ctl); color:var(--d-body); background:rgba(255,255,255,.08)}
@@ -157,32 +157,42 @@ main{display:flex; flex-direction:column; min-width:0; min-height:0; height:100%
 .hero::after{
   content:""; position:absolute; inset:0; pointer-events:none;
   background:
-    radial-gradient(54% 74% at 90% -16%, rgba(139,92,246,.40), transparent 62%),
+    linear-gradient(to left, var(--ink-950) 0%, color-mix(in srgb, var(--ink-950) 82%, transparent) 34%, transparent 66%),
+    radial-gradient(54% 74% at 90% -16%, rgba(99,102,241,.40), transparent 62%),
     radial-gradient(46% 58% at 2% -8%, rgba(79,70,229,.48), transparent 64%);
 }
+/* film grain over the 3D, as in the diorama engine's post stack */
 .hero::before{
-  content:""; position:absolute; inset:0; pointer-events:none;
-  background-image:
-    linear-gradient(rgba(255,255,255,.038) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,.038) 1px, transparent 1px);
-  background-size:58px 58px;
-  -webkit-mask-image:radial-gradient(76% 108% at 50% 0%, #000 28%, transparent 88%);
-          mask-image:radial-gradient(76% 108% at 50% 0%, #000 28%, transparent 88%);
+  content:""; position:absolute; inset:0; z-index:1; pointer-events:none; opacity:.09; mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
-.hero .wrap{position:relative; z-index:1}
+.hero .wrap{position:relative; z-index:2}
+/* data diorama (diorama.js): fades in after its first frame; the gradient above stays as the fallback */
+.hero .dio{position:absolute; inset:0; width:100%; height:100%; display:block; opacity:0; transition:opacity 1.4s var(--ease)}
+.hero .dio.on{opacity:1}
+@media (max-width:900px){
+  .hero .dio.on{opacity:.42}
+  .hero::after{background:linear-gradient(to bottom, color-mix(in srgb, var(--ink-950) 55%, transparent), var(--ink-950) 92%)}
+}
 
 /* text block and figures share one baseline grid */
 .hero-grid{
-  display:grid; grid-template-columns:minmax(0,1fr) 384px;
+  display:grid; grid-template-columns:minmax(0,1fr) minmax(320px,360px);
   gap:clamp(28px,4vw,64px); align-items:center;
 }
-@media (max-width:1120px){ .hero-grid{grid-template-columns:1fr; gap:30px} }
+@media (max-width:1240px){ .hero-grid{grid-template-columns:1fr; gap:30px} }
 
 .hero h1{
   font-weight:800; font-size:clamp(30px,3.6vw,46px); line-height:1.1;
-  margin:0 0 14px; color:var(--d-title); text-wrap:balance; max-width:16ch;
+  margin:0 0 14px; color:var(--d-title); max-width:24ch;
 }
 .hero h1 em{font-style:normal; color:#B9BDFF}
+/* Masked line rise, ported from the motion engine's text reveal: each line
+   sits in an overflow:hidden box and travels in from 105% below with a small
+   rotation, staggered. isolate keeps each line's own bidi run intact, which
+   plain inline-block splitting would break on mixed Hebrew/Latin. */
+.hero h1 .ln{display:block; overflow:hidden; padding-bottom:.08em; margin-bottom:-.08em}
+.hero h1 .ln > span{display:inline-block; unicode-bidi:isolate}
 .hero .lede{color:var(--d-body); font-size:clamp(15px,1.15vw,16.5px); max-width:48ch; margin:0 0 26px; line-height:1.6}
 
 .cta-row{display:flex; flex-wrap:wrap; gap:10px}
@@ -190,7 +200,7 @@ main{display:flex; flex-direction:column; min-width:0; min-height:0; height:100%
   all:unset; box-sizing:border-box; cursor:pointer; display:inline-flex; align-items:center; gap:9px;
   white-space:nowrap; font-family:var(--font-display); font-weight:600; font-size:14.5px;
   padding:0 20px; border-radius:var(--r-ctl); height:46px;
-  transition:transform .18s var(--ease), box-shadow .18s var(--ease), background .18s;
+  transition:transform .22s var(--out-expo), box-shadow .22s var(--out-expo), background .18s;
 }
 .btn:active{transform:translateY(0) scale(.98)}
 .btn-primary{background:#fff; color:var(--ink-950); box-shadow:0 6px 20px -6px rgba(0,0,0,.5)}
@@ -205,7 +215,8 @@ main{display:flex; flex-direction:column; min-width:0; min-height:0; height:100%
 .figures{
   display:grid; grid-template-columns:1fr 1fr;
   border:1px solid var(--d-line); border-radius:var(--r-card); overflow:hidden;
-  background:rgba(255,255,255,.045);
+  background:rgba(23,21,67,.55);
+  -webkit-backdrop-filter:blur(12px) saturate(1.3); backdrop-filter:blur(12px) saturate(1.3);
 }
 .figures > div{padding:20px 22px; border-inline-start:1px solid var(--d-line); border-block-start:1px solid var(--d-line)}
 .figures > div:nth-child(-n+2){border-block-start:0}
@@ -215,7 +226,7 @@ main{display:flex; flex-direction:column; min-width:0; min-height:0; height:100%
   font-size:clamp(28px,3vw,38px); line-height:1.05; color:#fff;
 }
 .figures span{font-size:12.5px; color:var(--d-dim)}
-@media (max-width:1120px){ .figures{max-width:520px} .figures > div{padding:16px 18px} }
+@media (max-width:1240px){ .figures{max-width:520px} .figures > div{padding:16px 18px} }
 
 /* --------------------------- section head --------------------------- */
 .sec{padding-block:clamp(38px,4.2vw,58px)}
@@ -230,7 +241,7 @@ main{display:flex; flex-direction:column; min-width:0; min-height:0; height:100%
 /* ------------------------------ bento ------------------------------ */
 /* 2 uniform columns + one double-height tile. Every cell shares a column
    width, so the grid reads as one object instead of mixed fractions. */
-.bento{display:grid; grid-template-columns:repeat(4,1fr); gap:var(--gap)}
+.bento{display:grid; grid-template-columns:repeat(4,1fr); grid-auto-flow:row dense; gap:var(--gap)}
 .s2{grid-column:span 2}
 .feature{grid-column:span 2; grid-row:span 2}
 @media (max-width:780px){
@@ -244,7 +255,7 @@ main{display:flex; flex-direction:column; min-width:0; min-height:0; height:100%
   box-shadow:var(--e1); cursor:pointer; width:100%; padding:0; margin:0;
   font:inherit; color:inherit; text-align:inherit; text-decoration:none;
   -webkit-appearance:none; appearance:none;
-  transition:transform .26s var(--ease), box-shadow .26s var(--ease), border-color .26s var(--ease);
+  transition:transform .3s var(--out-expo), box-shadow .3s var(--out-expo), border-color .3s var(--out-expo);
 }
 .card:hover{transform:translateY(-4px); border-color:var(--accent-line); box-shadow:var(--e2)}
 .card:active{transform:translateY(-1px) scale(.99)}
@@ -268,7 +279,7 @@ main{display:flex; flex-direction:column; min-width:0; min-height:0; height:100%
 .card:hover .ic{background:var(--accent); color:var(--accent-on)}
 .card .go{
   width:28px; height:28px; border-radius:var(--r-chip); border:1px solid var(--line); color:var(--muted);
-  display:grid; place-items:center; flex:none; transition:.22s var(--ease);
+  display:grid; place-items:center; flex:none; transition:.26s var(--out-expo);
 }
 .card:hover .go{background:var(--accent); border-color:var(--accent); color:var(--accent-on); transform:translateX(-3px)}
 .card h3{font-weight:600; font-size:16.5px; margin:0; color:var(--ink); line-height:1.32}
@@ -289,17 +300,8 @@ main{display:flex; flex-direction:column; min-width:0; min-height:0; height:100%
 .card.feature .hdr::before{
   content:""; position:absolute; inset:0;
   background:
-    radial-gradient(62% 80% at 88% 0%, rgba(139,92,246,.5), transparent 62%),
+    radial-gradient(62% 80% at 88% 0%, rgba(99,102,241,.5), transparent 62%),
     radial-gradient(54% 70% at 4% 100%, rgba(79,70,229,.45), transparent 64%);
-}
-.card.feature .hdr::after{
-  content:""; position:absolute; inset:0;
-  background-image:
-    linear-gradient(rgba(255,255,255,.055) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,.055) 1px, transparent 1px);
-  background-size:32px 32px;
-  -webkit-mask-image:radial-gradient(92% 120% at 26% 0%, #000 22%, transparent 92%);
-          mask-image:radial-gradient(92% 120% at 26% 0%, #000 22%, transparent 92%);
 }
 .card.feature .hdr > *{position:relative; z-index:1}
 .card.feature .hdr .ic{
@@ -321,11 +323,20 @@ main{display:flex; flex-direction:column; min-width:0; min-height:0; height:100%
 
 /* scroll reveal: sequence the grid as it enters. IntersectionObserver, no scroll listener. */
 @media (prefers-reduced-motion:no-preference){
+  /* cards settle on the soft spring: it overshoots ~4% and keeps drifting into
+     place, so no card ever lands on a dead stop */
   .reveal{opacity:0; transform:translateY(16px)}
-  .reveal.in{opacity:1; transform:none; transition:opacity .55s var(--ease), transform .55s var(--ease)}
-  .hero h1,.hero .lede,.hero .cta-row,.figures{animation:rise .75s var(--ease) both}
-  .hero .lede{animation-delay:.06s} .hero .cta-row{animation-delay:.12s} .figures{animation-delay:.1s}
+  .reveal.in{
+    opacity:1; transform:none;
+    transition:opacity var(--dur-settle-soft) var(--out-expo),
+               transform var(--dur-settle-soft) var(--settle-soft);
+  }
+  .hero h1 .ln > span{animation:lineRise var(--dur-settle-soft) var(--settle-soft) both}
+  .hero h1 .ln:nth-child(2) > span{animation-delay:90ms}
+  .hero .lede,.hero .cta-row,.figures{animation:rise var(--dur-settle) var(--settle) both}
+  .hero .lede{animation-delay:170ms} .hero .cta-row{animation-delay:250ms} .figures{animation-delay:210ms}
 }
+@keyframes lineRise{from{transform:translateY(105%) rotate(1.4deg)} to{transform:none}}
 @keyframes rise{from{opacity:0; transform:translateY(14px)} to{opacity:1; transform:none}}
 
 /* ---------------------------- procedures ---------------------------- */
@@ -345,7 +356,7 @@ main{display:flex; flex-direction:column; min-width:0; min-height:0; height:100%
   display:grid; place-items:center; font-variant-numeric:tabular-nums;
 }
 .proc h3{font-weight:600; font-size:16px; margin:5px 0 0; color:var(--ink); line-height:1.3}
-.proc p{margin:0; color:var(--body); font-size:13.8px; line-height:1.68}
+.proc p{margin:0; color:var(--body); font-size:13.8px; line-height:1.68; max-width:70ch}
 .proc strong{color:var(--ink); font-weight:600}
 .proc code{
   font-family:var(--font-ui); background:var(--accent-soft); color:var(--accent);
@@ -388,6 +399,7 @@ iframe{border:0; width:100%; flex:1; min-height:0; background:var(--surface)}
 }
 .skip-link:focus{top:12px}
 </style>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
 </head>
 <body>
 
@@ -431,10 +443,11 @@ iframe{border:0; width:100%; flex:1; min-height:0; background:var(--surface)}
     <div class="view on" id="dash">
 
       <section class="hero">
+        <canvas class="dio" aria-hidden="true"></canvas>
         <div class="wrap">
           <div class="hero-grid">
             <div class="text">
-              <h1>כל כלי ה-Power BI של היחידה, <em>במקום אחד</em></h1>
+              <h1><span class="ln"><span>כל כלי ה-Power BI</span></span><span class="ln"><span>של היחידה, <em>במקום אחד</em></span></span></h1>
               <p class="lede">שישה כלים לעבודה מול Power BI: אפיון מפגשים, שימור ידע, קטלוג ויזואלים, סקירת דוחות ועדכוני AI שבועיים.</p>
               <div class="cta-row">
                 <button class="btn btn-primary" id="ctaCatalog">
@@ -521,7 +534,7 @@ const tools = [
   { id:'knowledge-retention', ic:'folder-archive', title:'בונה תיקים - שימור ידע',   desc:'אשף מודרך לבניית תיק תיעוד ושימור ידע: בחירת סוג תיק, מילוי שלב-אחר-שלב ומדדי השלמה.',             tag:'אשף מודרך',        src:'knowledge-retention.html' },
   { id:'mcp-guide',           ic:'plug-zap',       title:'Power BI MCP ללא Node',    desc:'מדריך התקנה מלא לשרת ה-MCP של Power BI ב-Windows, ללא הרשאות אדמין וללא Node.js.',                 tag:'מדריך התקנה',      src:'mcp-guide.html' },
   { id:'scanner-guide',       ic:'shield-check',   title:'מדריך התקנה לסורק הדוחות', desc:'איך להתקין ולהפעיל את ה-Skill שסוקר דוחות Power BI ומחזיר דוח ביקורת מסודר בעברית.',               tag:'מדריך התקנה',      src:'scanner-guide.html' },
-  { id:'html-catalog',        ic:'bar-chart-3',    title:'קטלוג ויזואלי Power BI',   desc:'גרסת HTML חיה לכל ויזואל מובנה של Power BI, עם נתוני דוגמה, תגובה לסלייסר ופאנל סגנון להעתקת DAX.', tag:'קטלוג חי',         src:'html-catalog.html' },
+  { id:'html-catalog',        ic:'bar-chart-3',    title:'קטלוג ויזואלי Power BI',   desc:'גרסת HTML חיה לכל ויזואל מובנה של Power BI, עם נתוני דוגמה, תגובה לסלייסר ופאנל סגנון להעתקת DAX.', tag:'קטלוג חי',         src:'html-catalog.html', big:'44', bigNote:'ויזואלים מובנים, חיים בדפדפן' },
   { id:'data-ai-corner',      ic:'brain',          title:'פינת DATA&AI',             desc:'ארכיון העדכונים השבועיים: כלים וטיפים חדשים בעולמות ה-Power BI וה-AI, לפי תאריך.',                 tag:'ארכיון שבועי',     src:'data-ai-corner.html' },
 ];
 const byId = id => tools.find(t => t.id === id);
@@ -560,10 +573,10 @@ layout.forEach(({ id, cls }) => {
   card.className = `card reveal ${cls}`;
   card.setAttribute('aria-label', `${t.title}. ${t.tag}`);
 
-  card.innerHTML = cls === 'feature'
+  card.innerHTML = cls.startsWith('feature')
     ? `<div class="hdr">
          <div class="ic"><i data-lucide="${t.ic}" style="width:20px;height:20px"></i></div>
-         <div class="big"><span class="num">44</span><small>ויזואלים מובנים, חיים בדפדפן</small></div>
+         <div class="big"><span class="num">${t.big}</span><small>${t.bigNote}</small></div>
        </div>
        <div class="body">
          <div class="row"><h3>${t.title}</h3><div class="go"><i data-lucide="arrow-left" style="width:14px;height:14px"></i></div></div>
@@ -664,5 +677,15 @@ scrimEl.addEventListener('click', closeDrawer);
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
 </script>
 
+<script type="module">
+/* 3D data diorama behind the hero; renders only while the dashboard view is showing */
+import { mountDiorama } from './diorama.js';
+const dash = document.getElementById('dash');
+const dio = mountDiorama(document.querySelector('.hero .dio'), {
+  mode: 'field', host: document.querySelector('.hero'), isActive: () => dash.classList.contains('on'),
+});
+if (dio) new MutationObserver(() => (dash.classList.contains('on') ? dio.wake() : dio.sleep()))
+  .observe(dash, { attributes: true, attributeFilter: ['class'] });
+</script>
 </body>
 </html>

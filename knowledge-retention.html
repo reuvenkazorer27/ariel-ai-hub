@@ -22,9 +22,6 @@
 
   /* ─── מסך הבחירה ─── */
   .topbar{background:var(--brand);color:#fff;position:relative;overflow:hidden}
-  .topbar::after{content:"";position:absolute;inset:0;pointer-events:none;
-    background:repeating-linear-gradient(-45deg,rgba(255,255,255,.055) 0 2px,
-      transparent 2px 22px)}
   .topbar .in{max-width:1080px;margin:0 auto;padding:14px 20px;display:flex;
     align-items:center;gap:14px;position:relative;z-index:1}
   .topbar img{height:40px;width:auto;display:block}
@@ -54,7 +51,7 @@
   @media(max-width:900px){.pick{grid-template-columns:1fr}.home h1{font-size:26px}}
   .pick button{all:unset;cursor:pointer;background:var(--card);border:1px solid var(--line);
     border-radius:var(--r);padding:0 0 16px;display:flex;flex-direction:column;gap:7px;
-    transition:.18s;box-shadow:var(--shadow);height:100%;overflow:hidden;position:relative}
+    transition:transform .18s, box-shadow .18s, background-color .18s, border-color .18s, color .18s, opacity .18s;box-shadow:var(--shadow);height:100%;overflow:hidden;position:relative}
   .pick button::before{content:"";display:block;height:4px;
     background:linear-gradient(90deg,var(--accent),var(--accent-strong));opacity:.85}
   .pick button>*:not(.strip){margin-inline:18px}
@@ -105,7 +102,7 @@
     .side .acts button{flex:1 1 auto}}
   nav.steps button{all:unset;cursor:pointer;display:flex;align-items:center;gap:9px;
         padding:7px 9px;border-radius:9px;font-size:13.5px;color:var(--ink2);
-        transition:.14s;white-space:nowrap}
+        transition:transform .14s, box-shadow .14s, background-color .14s, border-color .14s, color .14s, opacity .14s;white-space:nowrap}
   nav.steps button:hover{background:var(--soft)}
   nav.steps button.on{background:var(--accent-soft);color:var(--ink);font-weight:700}
   nav.steps .dot{flex:0 0 auto;width:20px;height:20px;border-radius:50%;font-size:11px;
@@ -118,7 +115,7 @@
         border-top:1px solid var(--line2);padding-top:13px}
 
   button.b{all:unset;cursor:pointer;text-align:center;border-radius:10px;padding:9px 16px;
-        font-size:14.5px;font-weight:600;transition:.14s;background:var(--brand);color:#fff}
+        font-size:14.5px;font-weight:600;transition:transform .14s, box-shadow .14s, background-color .14s, border-color .14s, color .14s, opacity .14s;background:var(--brand);color:#fff}
   button.b:hover{background:var(--accent-strong)}
   button.b:focus-visible{outline:3px solid var(--brand2);outline-offset:2px}
   button.b.ghost{background:#fff;color:var(--ink);border:1px solid var(--field-line);font-weight:600}
@@ -144,7 +141,7 @@
   .pill{font-size:11px;font-weight:800;border-radius:99px;padding:2px 8px;letter-spacing:.2px}
   .pill.crit{background:var(--crit-bg);color:var(--crit)}
   .tick{color:var(--good);font-weight:800;font-size:15px;opacity:0;
-        transition:.18s}
+        transition:transform .18s, box-shadow .18s, background-color .18s, border-color .18s, color .18s, opacity .18s}
   .fld.on .tick{opacity:1}
   .hint{color:var(--muted);font-size:13.5px;line-height:1.55;margin-bottom:8px}
   .hint b{color:var(--ink2);font-weight:600}
@@ -156,7 +153,7 @@
       letter-spacing:.3px;padding-top:2px}
   input.in,textarea.in{width:100%;font:inherit;font-size:15.5px;padding:11px 13px;
       border:1.5px solid var(--field-line);border-radius:11px;background:#fff;color:var(--ink);
-      direction:rtl;text-align:right;transition:.14s}
+      direction:rtl;text-align:right;transition:transform .14s, box-shadow .14s, background-color .14s, border-color .14s, color .14s, opacity .14s}
   textarea.in{min-height:84px;resize:vertical;line-height:1.6}
   input.in:hover,textarea.in:hover{border-color:var(--accent-line)}
   input.in:focus,textarea.in:focus{outline:0;border-color:var(--brand2);
@@ -180,7 +177,7 @@
   /* בחירת סוג פריסה */
   .opts{display:grid;gap:10px}
   .opts label{display:flex;gap:12px;align-items:flex-start;border:1.5px solid var(--line);
-      border-radius:12px;padding:13px 15px;cursor:pointer;transition:.14s;background:#fff}
+      border-radius:12px;padding:13px 15px;cursor:pointer;transition:transform .14s, box-shadow .14s, background-color .14s, border-color .14s, color .14s, opacity .14s;background:#fff}
   .opts label:hover{border-color:var(--brand2);background:var(--surface-2)}
   .opts input{margin-top:3px;width:18px;height:18px;accent-color:var(--ink);flex:0 0 auto}
   .opts b{display:block;font-size:15px;margin-bottom:2px}
@@ -211,7 +208,7 @@
 
   #toast{position:fixed;bottom:24px;inset-inline-start:24px;background:var(--ink);color:var(--paper);
       padding:12px 20px;border-radius:12px;font-size:14.5px;opacity:0;pointer-events:none;
-      transition:.24s;z-index:80;box-shadow:0 10px 30px rgba(0,0,0,.28)}
+      transition:transform .24s, box-shadow .24s, background-color .24s, border-color .24s, color .24s, opacity .24s;z-index:80;box-shadow:0 10px 30px rgba(0,0,0,.28)}
   #toast.on{opacity:1}
 
   /* ═══════════ תצוגת מובייל ═══════════ */
@@ -305,7 +302,7 @@
   <div class="hero">
     <div>
       <div class="eyebrow">תיעוד שנשאר רלוונטי</div>
-      <h1>כל מערכת שבנינו — <span class="u">עם תיק שמסביר אותה</span></h1>
+      <h1>כל מערכת שבנינו - <span class="u">עם תיק שמסביר אותה</span></h1>
       <p class="lede">עונים על שאלות, ויוצא מסמך Word מסודר בעיצוב הארגון.
         הכול רץ במחשב שלכם: <b>אין שרת, אין העלאה,</b> ואפשר לעבוד גם בלי חיבור לאינטרנט.</p>
     </div>
@@ -319,19 +316,19 @@
   <div class="pick">
     <button onclick="start('system')">
       <span class="hd"><span class="ic">🖥️</span><span class="t">תיק מערכת</span></span>
-      <span class="d">מערכת שפיתחתם — בפלטפורמה מתארחת (Base44 וכדומה), על מחשב או שרת פנימי,
+      <span class="d">מערכת שפיתחתם - בפלטפורמה מתארחת (Base44 וכדומה), על מחשב או שרת פנימי,
         או פרוסה לדומיין. אותן שאלות לכל המקרים.</span>
-      <span class="q">אם מי שבנה לא יהיה כאן — מישהו יוכל להמשיך?</span>
+      <span class="q">אם מי שבנה לא יהיה כאן - מישהו יוכל להמשיך?</span>
     </button>
     <button onclick="start('dashboard')">
       <span class="hd"><span class="ic">📊</span><span class="t">תיק דוח / דשבורד</span></span>
-      <span class="d">דוח Power BI או דשבורד — מטרה וקהל, שלבי Power Query, מבנה המודל
+      <span class="d">דוח Power BI או דשבורד - מטרה וקהל, שלבי Power Query, מבנה המודל
         והקשרים, ומילון המדדים עם ההגדרה העסקית של כל אחד.</span>
       <span class="q">מה המספר הזה אומר, ומה הוא לא כולל?</span>
     </button>
     <button onclick="start('agent')">
       <span class="hd"><span class="ic">🤖</span><span class="t">תיק סוכן</span></span>
-      <span class="d">סוכן שהגדרתם ב-Claude — סקיל, תוסף או קובץ הנחיות. תחום האחריות,
+      <span class="d">סוכן שהגדרתם ב-Claude - סקיל, תוסף או קובץ הנחיות. תחום האחריות,
         הגבולות שהוגדרו לו, ואיך יודעים שהפלט נכון.</span>
       <span class="q">מתי הוא נכנס לפעולה, ומה אסור לו לגעת בו?</span>
     </button>
@@ -340,7 +337,7 @@
   <div class="pagefoot">
     <img src="data:image/png;base64,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" alt="">
     <span>אוניברסיטת אריאל בשומרון · המסמך נוצר במחשב שלכם ואינו נשלח לשום מקום</span>
-    <span class="tip">פתחו את הקובץ מהתיקייה בדאבל-קליק — לא בתצוגה מקדימה</span>
+    <span class="tip">פתחו את הקובץ מהתיקייה בדאבל-קליק - לא בתצוגה מקדימה</span>
   </div>
  </div>
 </div>
