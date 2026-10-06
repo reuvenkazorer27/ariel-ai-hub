@@ -35,10 +35,6 @@ body{
 .search input::placeholder{color:var(--ink-3)}
 .search svg{position:absolute; right:13px; top:50%; transform:translateY(-50%); color:var(--ink-3)}
 .count{font-size:13px; color:var(--ink-3); font-variant-numeric:tabular-nums; white-space:nowrap}
-.theme-btn{font:inherit; font-size:13px; color:var(--ink-2); background:var(--surface);
-  border:1px solid var(--line-strong); border-radius:12px; padding:8px 14px; cursor:pointer;
-  transition:transform .2s, box-shadow .2s, background-color .2s, border-color .2s, color .2s}
-.theme-btn:hover{border-color:var(--accent); color:var(--accent); box-shadow:0 0 0 3px var(--accent-glow)}
 
 /* ---------- intro ---------- */
 .intro{padding:28px 0 4px}
@@ -237,7 +233,6 @@ pre.code{margin:0; direction:ltr; text-align:left; overflow:auto; max-height:58v
       <input id="q" type="search" placeholder="חיפוש בקטלוג…" aria-label="חיפוש בקטלוג">
     </div>
     <span class="count" id="count"></span>
-    <button class="theme-btn" id="theme" type="button">מצב כהה</button>
   </div>
 </div>
 
@@ -5343,27 +5338,6 @@ IF(
     viewerItem = null;
   });
   dlg.addEventListener("click", function (e) { if (e.target === dlg) { dlg.close(); } });
-
-  /* ---------- page theme ---------- */
-  var themeBtn = document.getElementById("theme");
-  function pageTheme() {
-    var set = document.documentElement.getAttribute("data-theme");
-    if (set) { return set; }
-    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-  }
-  function paintThemeBtn() { themeBtn.textContent = pageTheme() === "dark" ? "מצב בהיר" : "מצב כהה"; }
-  themeBtn.addEventListener("click", function () {
-    var next = pageTheme() === "dark" ? "light" : "dark";
-    document.documentElement.setAttribute("data-theme", next);
-    try { localStorage.setItem("pbiCatalogTheme", next); } catch (e) { /* ignore */ }
-    paintThemeBtn();
-  });
-  try {
-    var savedTheme = localStorage.getItem("pbiCatalogTheme");
-    if (savedTheme) { document.documentElement.setAttribute("data-theme", savedTheme); }
-  } catch (e) { /* ignore */ }
-  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", paintThemeBtn);
-  paintThemeBtn();
 
   /* ---------- add visual ---------- */
   var addDialog = document.getElementById("add-dialog");

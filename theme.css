@@ -9,8 +9,7 @@
      · Radius  : controls 12px · cards/panels 20px · icon chips 12px · tags pill
      · Type    : Rubik (display) + Assistant (body/UI), both full Hebrew.
                  IBM Plex Mono for code and figures.
-     · Theme   : one theme per page. Follows prefers-color-scheme and can be
-                 pinned with [data-theme="light"|"dark"] on <html>.
+     · Theme   : light only, on every page. The OS dark-mode setting is ignored.
 
    Every page links this file BEFORE its own <style>, so page rules still win
    for layout. Legacy token names from the pre-migration pages are aliased at
@@ -106,48 +105,9 @@
   }
 }
 
-/* ---- dark: follows the OS unless the page pins light ---- */
-@media (prefers-color-scheme:dark){
-  :root:not([data-theme="light"]){
-    --accent:#8B93FF; --accent-strong:#A5ABFF; --accent-on:#0A0A1C;
-    --accent-soft:rgba(139,147,255,.13); --accent-line:#3A3782;
-    --accent-glow:rgba(139,147,255,.16);
-    --accent-wash:rgba(139,147,255,.28);
-    --gradient:linear-gradient(135deg,#7D86FF 0%,#8B93FF 100%);
-
-    --ink:#EEF0FA; --body:#B9C0D6; --muted:#8C95B4;
-    --paper:#0A0A1C; --surface:#141333; --surface-2:#191741;
-    --line:#2C2A63; --line-soft:#221F50; --field-line:#6764B5;
-
-    --ok:#3DD68C;     --ok-soft:rgba(61,214,140,.14);   --ok-line:rgba(61,214,140,.42);
-    --warn:#E0B252;   --warn-soft:rgba(224,178,82,.14);  --warn-line:rgba(224,178,82,.42);
-    --danger:#FF9086; --danger-soft:rgba(255,144,134,.14); --danger-line:rgba(255,144,134,.42);
-    --on-fill:#0A0A1C;
-
-    --e1:0 1px 2px rgba(0,0,0,.45);
-    --e2:0 2px 6px rgba(0,0,0,.5), 0 10px 20px -12px rgba(0,0,0,.6);
-  }
-}
-/* ---- dark: pinned by the page ---- */
-:root[data-theme="dark"]{
-  --accent:#8B93FF; --accent-strong:#A5ABFF; --accent-on:#0A0A1C;
-  --accent-soft:rgba(139,147,255,.13); --accent-line:#3A3782;
-  --accent-glow:rgba(139,147,255,.16);
-  --accent-wash:rgba(139,147,255,.28);
-  --gradient:linear-gradient(135deg,#7D86FF 0%,#8B93FF 100%);
-
-  --ink:#EEF0FA; --body:#B9C0D6; --muted:#8C95B4;
-  --paper:#0A0A1C; --surface:#141333; --surface-2:#191741;
-  --line:#2C2A63; --line-soft:#221F50; --field-line:#6764B5;
-
-  --ok:#3DD68C;   --ok-soft:rgba(61,214,140,.14);   --ok-line:rgba(61,214,140,.42);
-  --warn:#E0B252;   --warn-soft:rgba(224,178,82,.14);  --warn-line:rgba(224,178,82,.42);
-  --danger:#FF9086; --danger-soft:rgba(255,144,134,.14); --danger-line:rgba(255,144,134,.42);
-  --on-fill:#0A0A1C;
-
-  --e1:0 1px 2px rgba(0,0,0,.45);
-  --e2:0 2px 6px rgba(0,0,0,.5), 0 10px 20px -12px rgba(0,0,0,.6);
-}
+/* ---- light only: dark mode left buttons and controls unreadable, so the site
+   ignores the OS setting and tells the browser to draw light form controls ---- */
+:root{color-scheme:light}
 
 /* ============================================================
    Compatibility aliases.
