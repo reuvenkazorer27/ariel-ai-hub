@@ -648,8 +648,22 @@ if (document.readyState !== 'loading') renderIcons();
 document.addEventListener('DOMContentLoaded', renderIcons);
 window.addEventListener('load', renderIcons);
 
+/* ---- usage counting (GoatCounter events; the dashboard is at rkariel.goatcounter.com) ---- */
+function track(path, title){
+  const send = () => window.goatcounter.count({ path, title, event: true });
+  if (window.goatcounter && window.goatcounter.count) send();
+  else window.addEventListener('load', () => { if (window.goatcounter && window.goatcounter.count) send(); }, { once: true });
+}
+document.addEventListener('click', e => {
+  const a = e.target.closest('a');
+  if (!a) return;
+  if (a.hasAttribute('download')) track('download/scanner-zip', 'הורדת הסורק (ZIP)');
+  else if (a.href.includes('claude-desktop-guide')) track('external/claude-desktop-guide', 'מדריך Claude Desktop (חיצוני)');
+});
+
 /* ---- routing between dashboard and framed tool ---- */
 function openTool(t){
+  track('open/' + t.id, 'פתיחה מה-Hub: ' + t.title);
   document.getElementById('dash').classList.remove('on');
   document.getElementById('frame-view').classList.add('on');
   document.getElementById('frame').src = t.src;
@@ -689,5 +703,7 @@ const dio = mountDiorama(document.querySelector('.hero .dio'), {
 if (dio) new MutationObserver(() => (dash.classList.contains('on') ? dio.wake() : dio.sleep()))
   .observe(dash, { attributes: true, attributeFilter: ['class'] });
 </script>
+<!-- visit counting: GoatCounter, no cookies, no personal data -->
+<script data-goatcounter="https://rkariel.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>
 </html>
