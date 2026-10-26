@@ -249,43 +249,56 @@
   <h2>הוספת הסקילים של Power BI</h2>
   <p>שרת ה‑MCP נותן את הכלים. הסקילים נותנים את הידע - איך לבנות דוח PBIR תקין, איך לתכנן מודל סמנטי, מה הכללים של כל פורמט. מיקרוסופט מפרסמת אותם במאגר פתוח.</p>
 
+  <div class="note">
+    <span class="tag">מה השתנה במאגר</span>
+    <p>ארבע סקילי הדוח הנפרדים (<code>planning</code>, <code>design</code>, <code>authoring</code>, <code>management</code>) אוחדו לסקיל אחד: <code>powerbi-report-cli</code>. הוא בוחר לבד את המצב המתאים לפי הבקשה. השמות הישנים כבר לא קיימים במאגר, אז מי שהתקין לפי הגרסה הקודמת של המדריך - פשוט מריץ שוב את שני השלבים הבאים. הסקריפט גם מוחק את הסקילים הישנים.</p>
+  </div>
+
   <ol class="steps">
     <li>
-      <h3>שכפל את המאגר</h3>
-      <p>המאגר הוא <a href="https://github.com/microsoft/skills-for-fabric">microsoft/skills-for-fabric</a>. שכפול לתיקייה זמנית - לא לתיקיית העבודה:</p>
-<pre dir="ltr"><code>git clone --depth 1 https://github.com/microsoft/skills-for-fabric.git `
-  "$env:TEMP\skills-for-fabric"</code></pre>
-      <p class="cap">אין git? הורד ZIP מכפתור <em>Code</em> בדף המאגר וחלץ לאותו מקום.</p>
+      <h3>שכפל או עדכן את המאגר</h3>
+      <p>המאגר הוא <a href="https://github.com/microsoft/skills-for-fabric">microsoft/skills-for-fabric</a>. שכפול לתיקייה זמנית - לא לתיקיית העבודה. אם כבר שכפלת בעבר, אותה פקודה מושכת את העדכונים:</p>
+<pre dir="ltr"><code>$repo = "$env:TEMP\skills-for-fabric"
+if (Test-Path "$repo\.git") {
+  git -C $repo pull --ff-only
+} else {
+  git clone --depth 1 https://github.com/microsoft/skills-for-fabric.git $repo
+}</code></pre>
+      <p class="cap">אין git? הורד ZIP מכפתור <em>Code</em> בדף המאגר וחלץ אותו כך שהתיקייה תהיה <code>%TEMP%\skills-for-fabric</code>.</p>
     </li>
 
     <li>
-      <h3>העתק רק את הסקילים של Power BI</h3>
-      <p>המאגר מכיל עשרות סקילים לכל שירותי Fabric - Spark, Eventstream, מיגרציות ועוד. רובם לא רלוונטיים, וכל סקיל מיותר גוזל הקשר ומבלבל את המודל בבחירה. קח את חמשת הסקילים של Power BI בלבד:</p>
-<pre dir="ltr"><code>$src  = "$env:TEMP\skills-for-fabric\skills"
-$dest = ".\.claude\skills"          # מתוך תיקיית הפרויקט שלך
+      <h3>העתק רק את שני הסקילים של Power BI</h3>
+      <p>המאגר מכיל עשרות סקילים לכל שירותי Fabric - Spark, Eventstream, מיגרציות ועוד. רובם לא רלוונטיים, וכל סקיל מיותר גוזל הקשר ומבלבל את המודל בבחירה. לוקחים רק את שני הסקילים של Power BI, ואת שלושת קבצי הרקע המשותפים ש‑<code>semantic-model-authoring</code> מפנה אליהם (הם יושבים בתיקיית <code>common</code> של המאגר):</p>
+<pre dir="ltr"><code>$repo = "$env:TEMP\skills-for-fabric"
+$dest = ".\.claude"                 # מתוך תיקיית הפרויקט שלך
 
-$keep = @(
-  "semantic-model-authoring",
-  "powerbi-report-planning",
-  "powerbi-report-design",
-  "powerbi-report-authoring",
-  "powerbi-report-management"
-)
-
-New-Item -ItemType Directory -Force -Path $dest | Out-Null
-foreach ($s in $keep) {
-  Copy-Item -Path (Join-Path $src $s) -Destination $dest -Recurse -Force
+# remove the four report skills from the old layout, if present
+"powerbi-report-planning","powerbi-report-design",
+"powerbi-report-authoring","powerbi-report-management" | ForEach-Object {
+  Remove-Item "$dest\skills\$_" -Recurse -Force -ErrorAction SilentlyContinue
 }
-Get-ChildItem $dest -Directory | Select-Object -ExpandProperty Name</code></pre>
+
+# the two Power BI skills
+New-Item -ItemType Directory -Force -Path "$dest\skills" | Out-Null
+foreach ($s in "semantic-model-authoring","powerbi-report-cli") {
+  Copy-Item "$repo\skills\$s" "$dest\skills" -Recurse -Force
+}
+
+# shared files the model skill links to (../../common from inside the skill)
+New-Item -ItemType Directory -Force -Path "$dest\common" | Out-Null
+foreach ($f in "COMMON-CLI.md","COMMON-CORE.md","ITEM-DEFINITIONS-CORE.md") {
+  Copy-Item "$repo\common\$f" "$dest\common" -Force
+}
+
+Get-ChildItem "$dest\skills" -Directory | Select-Object -ExpandProperty Name</code></pre>
+      <p class="cap">בסוף הריצה הרשימה צריכה להציג את <code>semantic-model-authoring</code> ואת <code>powerbi-report-cli</code>.</p>
       <div class="tbl">
         <table>
           <thead><tr><th>סקיל</th><th>למה הוא אחראי</th></tr></thead>
           <tbody>
-            <tr><td><code>semantic-model-authoring</code></td><td>טבלאות, עמודות, מדדים, קשרים, TMDL</td></tr>
-            <tr><td><code>powerbi-report-planning</code></td><td>אפיון דוח מקצה לקצה ואישור מפרט</td></tr>
-            <tr><td><code>powerbi-report-design</code></td><td>בחירת ויזואלים, פריסה, צבע, טיפוגרפיה</td></tr>
-            <tr><td><code>powerbi-report-authoring</code></td><td>כתיבת קבצי PBIR בפועל</td></tr>
-            <tr><td><code>powerbi-report-management</code></td><td>העלאה והורדה מול Fabric</td></tr>
+            <tr><td><code>semantic-model-authoring</code></td><td>טבלאות, עמודות, מדדים, קשרים, פרמטרי שדות, DAX ו‑TMDL</td></tr>
+            <tr><td><code>powerbi-report-cli</code></td><td>כל מחזור החיים של הדוח, בארבעה מצבים: תכנון ואישור מפרט, עיצוב (ויזואלים, פריסה, צבע, טיפוגרפיה), כתיבת קבצי PBIR, והעלאה והורדה מול Fabric</td></tr>
           </tbody>
         </table>
       </div>
@@ -303,19 +316,24 @@ Never edit model or report files from memory.
 
 | Task | Skill to load first |
 |---|---|
-| Tables, columns, measures, relationships, TMDL | semantic-model-authoring |
-| Planning a new report end to end | powerbi-report-planning |
-| Visual selection, layout, colors, theme | powerbi-report-design |
-| Writing or editing PBIR files | powerbi-report-authoring |
-| Upload / download to Fabric | powerbi-report-management |
+| Tables, columns, measures, relationships, DAX, TMDL | semantic-model-authoring |
+| Planning a new report end to end | powerbi-report-cli (planning mode) |
+| Visual selection, layout, colors, theme | powerbi-report-cli (design mode) |
+| Writing or editing PBIR files | powerbi-report-cli (authoring mode) |
+| Upload / download to Fabric | powerbi-report-cli (management mode) |
 
 Rules:
-- Announce which skill you loaded before the first edit.
+- Announce which skill and mode you loaded before the first edit.
 - If no skill fits, say so instead of improvising.
 - The powerbi-modeling-mcp server must be connected before
   touching a live model. Verify with a local-instance listing.
 - Do not close and reopen the PBIP file after edits.
   Use "Apply external changes" in Power BI Desktop instead.
+- The powerbi-report-author and powerbi-desktop CLIs are NOT
+  installed here (no Node.js). Skip their validate, preview and
+  screenshot steps. Do not try to install them. After each batch
+  of edits, ask me to apply the changes in Desktop and send a
+  screenshot.
 
 ## RTL and Hebrew - non-negotiable
 
@@ -342,9 +360,14 @@ with no visible error in the UI.
   </ol>
 
   <div class="note warn">
-    <span class="tag">שתי סקילים לא יעבדו במלואן בלי Node</span>
-    <p><strong>powerbi-report-authoring</strong> ו‑<strong>powerbi-report-planning</strong> נשענות על שני כלי CLI שמופצים כחבילות npm ודורשים Node 20 ומעלה - <code>powerbi-report-author</code> לאימות סכימת PBIR, ו‑<code>powerbi-desktop</code> ללולאת הצילום והרינדור. בלי Node עדיין אפשר לערוך PBIR ידנית, אבל בלי אימות סכימה ובלי צילום מסך אוטומטי.</p>
-    <p>שלוש הסקילים האחרות - <code>semantic-model-authoring</code>, <code>powerbi-report-design</code> ו‑<code>powerbi-report-management</code> - עובדות במלואן בלי Node. וכל מה שתואר עד כאן במדריך, כולל שתיהן במצב הידני, לא דורש הרשאות אדמין.</p>
+    <span class="tag">סקיל הדוח לא יעבוד במלואו בלי Node</span>
+    <p><strong>powerbi-report-cli</strong> נשען על שני כלי CLI שמופצים כחבילות npm ודורשים Node - <code>powerbi-report-author</code> לאימות סכימת PBIR, להכנת חבילות העלאה ל‑Fabric ולתצוגה מקדימה, ו‑<code>powerbi-desktop</code> ללולאת הצילום והרינדור. בלי Node עדיין מקבלים את כל הידע של הסקיל ואפשר לערוך PBIR, אבל בלי אימות סכימה, בלי צילום מסך אוטומטי, ובלי מצב ההעלאה ל‑Fabric. לכן השורה על ה‑CLI בקובץ <code>CLAUDE.md</code> שלמעלה חשובה: בלעדיה Claude ינסה להתקין אותם.</p>
+    <p><code>semantic-model-authoring</code> עובד במלואו בלי Node. וכל מה שתואר עד כאן במדריך לא דורש הרשאות אדמין.</p>
+  </div>
+
+  <div class="note">
+    <span class="tag">ומי שיש לו Node?</span>
+    <p>המאגר מציע גם התקנה כפלאגין: <code>/plugin marketplace add microsoft/skills-for-fabric</code> ואז <code>/plugin install powerbi-authoring@fabric-collection</code>. הפלאגין מתקין את שני הסקילים ומעדכן אותם לבד, אבל גם רושם שרת MCP משלו בשם <code>powerbi-modeling-mcp</code> שרץ דרך npx - כלומר דורש Node ומתנגש בשם עם השרת שרשמת בחלק א׳. בסביבה שלנו, בלי Node, נשארים עם ההעתקה הידנית.</p>
   </div>
 
   <p class="part" id="part-c">חלק ג׳</p>
