@@ -1,0 +1,421 @@
+<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<title>התקנת Power Viz ל-VS Code</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Cdefs%3E%3ClinearGradient id=%27g%27 x1=%270%27 y1=%270%27 x2=%271%27 y2=%271%27%3E%3Cstop offset=%270%27 stop-color=%27%234F46E5%27/%3E%3Cstop offset=%271%27 stop-color=%27%237C3AED%27/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width=%2732%27 height=%2732%27 rx=%278%27 fill=%27url(%23g)%27/%3E%3Cpath d=%27M9 22 L9 15 M16 22 L16 10 M23 22 L23 13%27 stroke=%27%23fff%27 stroke-width=%273.2%27 stroke-linecap=%27round%27/%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;700&family=Assistant:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+  /* Layout: one RTL column, ~72ch measure; editor-dark code blocks as the one constant
+     surface, since the subject is a report that lives as files in an editor. */
+  :root {
+    --bg: #EEF2F6;
+    --surface: #FFFFFF;
+    --ink: #15202C;
+    --ink-soft: #55657A;
+    --rule: #D5DEE7;
+    --accent: #B4780A;
+    --accent-tint: #FBF0DA;
+    --teal: #0C6F66;
+    --teal-tint: #E0F0EE;
+    --code-bg: #1B2430;
+    --code-fg: #D8E3F0;
+    --code-dim: #8FA3BA;
+    --link: #0B6CB8;
+    --display: "Rubik", "Segoe UI", sans-serif;
+    --body: "Assistant", "Segoe UI", sans-serif;
+    --mono: "JetBrains Mono", "Cascadia Mono", Consolas, monospace;
+  }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 17px;
+    line-height: 1.7;
+  }
+  .wrap {
+    direction: rtl;
+    max-width: 50rem;
+    margin-inline: auto;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    padding-block: 3rem 4.5rem;
+  }
+
+  h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; }
+  h1 { font-size: clamp(2rem, 6vw, 2.9rem); font-weight: 700; line-height: 1.2; letter-spacing: -0.01em; }
+  h2 { font-size: 1.5rem; font-weight: 700; }
+  h3 { font-size: 1.05rem; font-weight: 500; }
+  p { margin: 0; }
+
+  /* Masthead */
+  .mast { display: flex; flex-direction: column; gap: 1.25rem; }
+  .marks { display: flex; align-items: center; gap: .6rem; }
+  .mark {
+    width: 46px; height: 46px; border-radius: 11px; display: grid; place-items: center;
+    overflow: hidden; flex: none;
+  }
+  .mark img { width: 46px; height: 46px; display: block; }
+  .mark.on-white { background: #fff; }
+  .plus { color: var(--ink-soft); font-size: 1.1rem; font-family: var(--mono); }
+  .lede { font-size: 1.15rem; color: var(--ink-soft); max-width: 42ch; }
+  .facts { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .25rem; }
+  .fact {
+    font-size: .82rem; font-family: var(--display); font-weight: 500;
+    padding: .25rem .7rem; border-radius: 999px;
+    background: var(--teal-tint); color: var(--teal);
+  }
+  .fact.warn { background: var(--accent-tint); color: var(--accent); }
+
+  section { margin-top: 3.25rem; }
+  .sec-head {
+    display: flex; align-items: baseline; gap: .75rem;
+    border-bottom: 1px solid var(--rule); padding-bottom: .55rem; margin-bottom: 1.4rem;
+  }
+  .sec-no {
+    font-family: var(--mono); font-size: .85rem; color: var(--accent);
+    font-weight: 500; flex: none;
+  }
+  .prose > * + * { margin-top: 1rem; }
+
+  /* Steps - a real sequence, so they carry real numbers */
+  ol.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.1rem; }
+  ol.steps > li {
+    display: grid; grid-template-columns: 1.9rem 1fr; gap: .85rem; align-items: start;
+  }
+  ol.steps > li::before {
+    content: counter(step); counter-increment: step;
+    font-family: var(--display); font-weight: 700; font-size: 1.1rem;
+    color: var(--accent); text-align: center; line-height: 1.6;
+  }
+  ol.steps { counter-reset: step; }
+  ol.steps .sub { color: var(--ink-soft); font-size: .95rem; }
+
+  ul.plain { margin: 0; padding: 0; list-style: none; display: grid; gap: .6rem; }
+  /* The marker is positioned, not a grid track: these items mix <b> with loose
+     text, and a grid would drop each text run into the marker's own column. */
+  ul.plain > li { position: relative; padding-right: 1.3rem; }
+  ul.plain > li::before {
+    content: ""; position: absolute; right: .3rem; top: .72rem;
+    width: .35rem; height: .35rem; border-radius: 50%;
+    background: var(--accent);
+  }
+  b, strong { font-weight: 600; }
+  .term { font-family: var(--display); font-weight: 500; }
+
+  code {
+    font-family: var(--mono); font-size: .88em;
+    direction: ltr; unicode-bidi: isolate;
+    background: var(--accent-tint); color: var(--accent);
+    padding: .1em .38em; border-radius: 4px;
+  }
+
+  /* Code blocks keep the editor's own surface in both themes */
+  .code {
+    position: relative; margin-top: 1rem;
+    background: var(--code-bg); border-radius: 10px;
+    overflow: hidden;
+  }
+  .code pre {
+    margin: 0; padding: 1rem 1.1rem; direction: ltr; text-align: left;
+    overflow-x: auto; color: var(--code-fg);
+    font-family: var(--mono); font-size: .85rem; line-height: 1.75;
+  }
+  /* Room for the copy button, which floats over the block's first line. */
+  .code.has-copy pre { padding-top: 2.9rem; }
+  .code .dim { color: var(--code-dim); }
+  .copy {
+    position: absolute; top: .55rem; left: .55rem;
+    font-family: var(--display); font-size: .72rem; font-weight: 500;
+    color: var(--code-fg); background: rgba(255,255,255,.1);
+    border: 1px solid rgba(255,255,255,.18); border-radius: 6px;
+    padding: .22rem .6rem; cursor: pointer;
+  }
+  .copy:hover { background: rgba(255,255,255,.18); }
+  .copy:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .table-scroll { overflow-x: auto; margin-top: 1rem; }
+  table { border-collapse: collapse; width: 100%; min-width: 30rem; font-size: .95rem; }
+  th, td { text-align: right; padding: .65rem .8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  th {
+    font-family: var(--display); font-weight: 500; font-size: .82rem;
+    color: var(--ink-soft); letter-spacing: .04em;
+    border-bottom: 2px solid var(--rule);
+  }
+  td:first-child { font-weight: 600; white-space: nowrap; }
+
+  .note {
+    background: var(--surface); border: 1px solid var(--rule);
+    border-radius: 10px; padding: 1rem 1.15rem; margin-top: 1.25rem;
+  }
+  .note .label {
+    font-family: var(--display); font-weight: 500; font-size: .78rem;
+    letter-spacing: .05em; color: var(--teal); display: block; margin-bottom: .3rem;
+  }
+  .note.caution .label { color: var(--accent); }
+
+  a { color: var(--link); }
+  footer {
+    margin-top: 4rem; padding-top: 1.25rem; border-top: 1px solid var(--rule);
+    color: var(--ink-soft); font-size: .88rem;
+  }
+  video.demo { display:block; width:100%; max-width:340px; aspect-ratio:9/16; margin-top:1rem; border-radius:12px; background:#000; border:1px solid var(--rule); }
+  @media (max-width: 420px) {
+    body { font-size: 16px; }
+    ol.steps > li { grid-template-columns: 1.5rem 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="mast">
+    <div class="marks">
+      <span class="mark on-white"><img src="data:image/png;base64,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" alt="VS Code"></span>
+      <span class="plus">+</span>
+      <span class="mark"><img src="data:image/png;base64,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" alt="Power Viz"></span>
+    </div>
+    <h1>התקנת Power Viz ל-VS Code</h1>
+    <p class="lede">לפתוח, לסקור ולערוך דוחות Power BI כקוד - עם הנתונים האמיתיים, אופליין, בלי Power BI Desktop.</p>
+    <div class="facts">
+      <span class="fact">Windows · macOS · Linux</span>
+      <span class="fact">VS Code 1.106+</span>
+      <span class="fact">בלי Power BI Desktop</span>
+      <span class="fact warn">Preview - בפיתוח פעיל</span>
+    </div>
+  </header>
+
+  <section>
+    <div class="sec-head"><span class="sec-no">00</span><h2>בקצרה, בסרטון</h2></div>
+    <div class="prose">
+      <p>45 שניות: מתקינים, פותחים תיקיית PBIP, והדוח נפתח בתצוגה חיה בתוך VS Code. לוחצים על ויזואל ורואים את השדות שלו, ומבקשים מה-AI שינוי בשפה חופשית.</p>
+      <video class="demo" src="media/power-viz-demo.mp4" controls preload="metadata" playsinline></video>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-no">01</span><h2>לפני שמתחילים</h2></div>
+    <div class="prose">
+      <ul class="plain">
+        <li><b class="term">VS Code 1.106</b> ומעלה. גרסה ישנה יותר לא תטען את התוסף.</li>
+        <li><b class="term">Git</b> מותקן - נדרש רק כדי להשוות גרסאות (Visual diff ותצוגת Changes). בלעדיו כל השאר עובד.</li>
+        <li><b class="term">קובץ לעבוד עליו</b> - קובץ <code>.pbip</code>, תיקיית <code>*.Report</code>, או <code>.pbix</code> / <code>.pbit</code> שאפשר להמיר.</li>
+        <li><b class="term">לא נדרש</b> - Power BI Desktop, חשבון Power BI, או חיבור לאינטרנט. הכול רץ מקומית.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-no">02</span><h2>התקנה</h2></div>
+    <div class="prose">
+      <ol class="steps">
+        <li>
+          <div>
+            <div>פתח את <b class="term">Extensions</b> בסרגל הצד.</div>
+            <div class="sub">קיצור: <code>Ctrl+Shift+X</code> (ב-Mac: <code>Cmd+Shift+X</code>)</div>
+          </div>
+        </li>
+        <li>
+          <div>
+            <div>חפש <b class="term">Power Viz</b> ובחר את <b class="term">Power Viz — Power BI Projects</b>.</div>
+            <div class="sub">המפרסם הוא Afzal Khan. יש כמה תוספים עם שם דומה - ודא את שם המפרסם.</div>
+          </div>
+        </li>
+        <li>
+          <div>
+            <div>לחץ <b class="term">Install</b>.</div>
+            <div class="sub">הכפתור מתחלף ל-Disable / Uninstall כשההתקנה הסתיימה.</div>
+          </div>
+        </li>
+      </ol>
+
+      <p style="margin-top:1.5rem">לחלופין, משורת הפקודה:</p>
+      <div class="code has-copy">
+        <button class="copy" type="button" data-copy="code --install-extension afzalkhan.power-viz">העתק</button>
+        <pre>code --install-extension afzalkhan.power-viz</pre>
+      </div>
+
+      <div class="note">
+        <span class="label">איך יודעים שזה עבד</span>
+        אייקון <b class="term">Power BI</b> חדש מופיע ב-Activity Bar. לחיצה עליו פותחת את התצוגות
+        <b class="term">Projects</b> ו-<b class="term">Changes</b>. אם האייקון לא מופיע, טען את החלון מחדש:
+        <code>Developer: Reload Window</code> מתוך ה-Command Palette.
+      </div>
+
+      <div class="note caution">
+        <span class="label">כדאי להשאיר דלוק</span>
+        התוסף בשלב Preview ובפיתוח פעיל, אז <b class="term">Auto Update</b> שווה את זה. תקלות ובקשות נשלחות
+        דרך לשונית ה-Q&amp;A בדף התוסף.
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-no">03</span><h2>הפרויקט הראשון</h2></div>
+    <div class="prose">
+      <p>פתח <b class="term">תיקייה</b>, לא קובץ בודד. זו הטעות הנפוצה בפעם הראשונה: Power Viz מחפש פרויקט, והפרויקט הוא תיקייה.</p>
+
+      <div class="code">
+        <pre><span class="dim">HR &amp; People.pbip          </span>← the project file
+<span class="dim">HR &amp; People.Report/       </span>← pages, visuals, theme
+<span class="dim">  definition.pbir</span>
+<span class="dim">  definition/pages/…/visual.json</span>
+<span class="dim">HR &amp; People.SemanticModel/</span> ← tables, measures (TMDL)</pre>
+      </div>
+
+      <ol class="steps" style="margin-top:1.5rem">
+        <li><div><b class="term">File → Open Folder</b>, ובחר את התיקייה שמכילה את ה-<code>.pbip</code>.</div></li>
+        <li><div>לחץ על אייקון <b class="term">Power BI</b>. הפרויקט יופיע תחת Projects, עם Report ו-Semantic model.</div></li>
+        <li>
+          <div>
+            <div>הרחב את <b class="term">Report</b> ולחץ על עמוד - התצוגה המקדימה נפתחת.</div>
+            <div class="sub">אפשר גם: <code>Power Viz: Open Report Preview</code> מה-Command Palette.</div>
+          </div>
+        </li>
+        <li>
+          <div>
+            <div>לחץ על ויזואל כדי לראות את השדות והאזהרות שלו.</div>
+            <div class="sub">לחיצה כפולה פותחת את ה-<code>visual.json</code> שלו. עם <b class="term">Follow active editor</b> דלוק, פתיחת קובץ כזה בוחרת את הוויזואל בתצוגה.</div>
+          </div>
+        </li>
+      </ol>
+
+      <h3 style="margin-top:2rem">אין לך פרויקט PBIP?</h3>
+      <ul class="plain" style="margin-top:.75rem">
+        <li>ב-Power BI Desktop: <b class="term">File → Save as → Power BI project</b>.</li>
+        <li>ב-VS Code: לחיצה ימנית על קובץ <code>.pbix</code> ב-Explorer ← <code>Power Viz: Convert .pbix to PBIP Project…</code></li>
+      </ul>
+      <p style="margin-top:1rem">קבצי <code>.pbix</code> ו-<code>.pbit</code> נפתחים לתצוגה לקריאה בלבד. כדי לערוך אותם צריך להמיר ל-PBIP. ה-<code>.pbix</code> המקורי נשמר בזיכרון, כך שהתצוגה ממשיכה להציג את הנתונים שלו.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-no">04</span><h2>מצבי נתונים</h2></div>
+    <div class="prose">
+      <p>ברירת המחדל היא <b class="term">Local data</b>: הערכים מפוענחים מתוך ה-<code>.pbix</code> ומחושבים במנוע DAX מובנה, על המחשב שלך. אין חיבור לשום מקום.</p>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr><th>מצב</th><th>מאיפה הנתונים</th><th>מה צריך</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Local data</td><td>מפוענחים מה-<code>.pbix</code>, מחושבים מקומית</td><td><code>.pbix</code> עם נתונים; אחרת יוצגו נתוני דוגמה</td></tr>
+            <tr><td>Sample data</td><td>ערכים מומצאים, עם שמות קטגוריות אמיתיים כשיש</td><td>כלום</td></tr>
+            <tr><td>Power BI service</td><td>שאילתות מול מודל סמנטי מפורסם</td><td>התחברות, ואז <code>Select Service Dataset…</code></td></tr>
+            <tr><td>Live</td><td>הדוח כפי ששירות Power BI מרנדר אותו</td><td>פרויקט PBIP, מנוי Pro ומודל מפורסם</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="margin-top:1rem">מחליפים מצב לכל פרויקט בנפרד - מסרגל התצוגה, משורת המצב, או דרך <code>Power Viz: Select Data Mode…</code>. ברירת המחדל הכללית נקבעת בהגדרה <code>powerViz.dataMode</code>.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-no">05</span><h2>הגדרת ה-AI</h2></div>
+    <div class="prose">
+      <p>יש שלוש דרכים נפרדות, ואפשר להפעיל יותר מאחת. בכל אחת מהן כל עריכה של ה-AI היא שינוי קובץ רגיל שאפשר לסקור ב-Visual diff לפני שמשאירים אותו.</p>
+
+      <h3 style="margin-top:1.75rem">צ'אט מובנה</h3>
+      <p style="margin-top:.5rem">הכפתור <b class="term">Ask AI</b> על כל עמוד, ויזואל או אובייקט במודל. בוחרים ספק בפאנל: Claude או GitHub Copilot.</p>
+      <p style="margin-top:.75rem">ל-Claude צריך מפתח Anthropic:</p>
+      <div class="code has-copy">
+        <button class="copy" type="button" data-copy="Power Viz: Set Anthropic API Key…">העתק</button>
+        <pre>Power Viz: Set Anthropic API Key…</pre>
+      </div>
+      <div class="note">
+        <span class="label">איפה המפתח נשמר</span>
+        ב-secret storage של VS Code, אף פעם לא בקובצי ההגדרות. הדגם נקבע בהגדרה
+        <code>powerViz.ai.claudeModel</code>, והספק בברירת מחדל ב-<code>powerViz.ai.provider</code>.
+      </div>
+
+      <h3 style="margin-top:2rem">GitHub Copilot</h3>
+      <p style="margin-top:.5rem">הכלים של Power Viz זמינים ב-Copilot agent mode, והמשתתף <code>@powerviz</code> עובד ב-Copilot Chat עם <code>/edit</code>, <code>/review</code> ו-<code>/explain</code>. אין מה להגדיר.</p>
+
+      <h3 style="margin-top:2rem">Claude Code, Cursor ו-agent hosts אחרים</h3>
+      <p style="margin-top:.5rem">ל-Claude Code, הרץ פעם אחת לכל workspace:</p>
+      <div class="code has-copy">
+        <button class="copy" type="button" data-copy="Power Viz: Configure Claude Code for This Workspace…">העתק</button>
+        <pre>Power Viz: Configure Claude Code for This Workspace…</pre>
+      </div>
+      <p style="margin-top:1rem">זה מוסיף ל-workspace את שרת ה-MCP של Power Viz ומיומנות לעריכת דוחות. <b>הרץ שוב אחרי כל עדכון של התוסף.</b> ל-Cursor ול-Copilot agent mode השרת מוצע אוטומטית בתיקיות שמכילות פרויקט Power BI, כל עוד <code>powerViz.mcp.enable</code> דלוק.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-no">06</span><h2>פקודות שכדאי להכיר</h2></div>
+    <div class="prose">
+      <p>הכול מה-Command Palette (<code>Ctrl+Shift+P</code>).</p>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>פקודה</th><th>מה היא עושה</th></tr></thead>
+          <tbody>
+            <tr><td><code>Open Report Preview</code></td><td>תצוגה מקדימה של הפרויקט של הקובץ הפעיל</td></tr>
+            <tr><td><code>Visual Diff with HEAD</code></td><td>משווה את עותק העבודה לקומיט האחרון</td></tr>
+            <tr><td><code>Open Semantic Model Diagram</code></td><td>טבלאות, קשרים, מדדים ואיפה כל שדה בשימוש</td></tr>
+            <tr><td><code>Validate Project</code></td><td>בודק את כל הפרויקט ומרכז את הבעיות ב-Problems</td></tr>
+            <tr><td><code>Convert .pbix to PBIP Project…</code></td><td>יוצר פרויקט PBIP שאפשר לערוך</td></tr>
+            <tr><td><code>Export Page as PNG…</code></td><td>שומר את העמוד הנוכחי כתמונה</td></tr>
+            <tr><td><code>Show Log</code></td><td>פותח את ערוץ הפלט - הדבר הראשון לבדוק כשמשהו נתקע</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-no">07</span><h2>מה לבדוק כשמשהו לא עובד</h2></div>
+    <div class="prose">
+      <ul class="plain">
+        <li><b class="term">אין אייקון Power BI</b> - גרסת VS Code ישנה מ-1.106, או שצריך <code>Developer: Reload Window</code>.</li>
+        <li><b class="term">"No Power BI project found"</b> - נפתח קובץ ולא תיקייה, או שהתיקייה לא מכילה <code>.pbip</code> / <code>*.Report</code>.</li>
+        <li><b class="term">אין Visual diff</b> - Git לא מותקן, או שהתיקייה אינה מאגר Git. בנוסף, ההשוואה והפריסה מושבתות ב-Restricted Mode.</li>
+        <li><b class="term">הערכים נראים לא נכונים</b> - התצוגה מסמנת ויזואלים כ-<code>Approximate</code> כשמנוע ה-DAX המובנה לא תומך בפונקציה. למדידה מדויקת השתמש ב-Live mode.</li>
+        <li><b class="term">מפות או ויזואלים מותאמים ריקים</b> - מפות, ויזואלי AI וויזואלים מותאמים מוצגים כמצייני מקום בתצוגה האופליינית. זו התנהגות מתוכננת.</li>
+        <li><b class="term">העיצוב לא זהה ל-Power BI</b> - התצוגה קרובה מאוד אבל אינה העתק מדויק לפיקסל. Live mode מציג את הדוח כפי שהשירות מרנדר אותו.</li>
+      </ul>
+
+      <div class="note">
+        <span class="label">פרטיות</span>
+        הרינדור, הוולידציה, ההמרה וההשוואה קורים על המחשב שלך, ונתוני הדוח לא יוצאים ממנו. אין טלמטריה.
+        בקשות רשת קורות רק כשאתה בעצמך משתמש ביכולת ענן: התחברות ל-Power BI או Fabric, צ'אט עם Claude או
+        Copilot (התוכן שנשלח מגיע לספק), ו-<b class="term">Publish Sandbox</b> - היחידה שמעלה את ה-<code>.pbix</code>
+        כולו, ורק אחרי אישור שלך.
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    Power Viz — Power BI Projects, מאת Afzal Khan. רישיון MIT.
+    Power BI ו-Microsoft Fabric הם סימנים מסחריים של Microsoft; Power Viz אינו מסונף ל-Microsoft ואינו נתמך על ידה.
+  </footer>
+
+</div>
+
+<script>
+  document.querySelectorAll(".copy").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var text = btn.getAttribute("data-copy") || "";
+      var done = function () {
+        var was = btn.textContent;
+        btn.textContent = "הועתק";
+        setTimeout(function () { btn.textContent = was; }, 1400);
+      };
+      try {
+        navigator.clipboard.writeText(text).then(done, function () { select(btn); });
+      } catch (e) {
+        select(btn);
+      }
+    });
+  });
+  function select(btn) {
+    var pre = btn.parentNode.querySelector("pre");
+    if (!pre) return;
+    var range = document.createRange();
+    range.selectNodeContents(pre);
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    btn.textContent = "בחר והעתק";
+  }
+</script>
+
+</body></html>

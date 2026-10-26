@@ -243,9 +243,10 @@ main{display:flex; flex-direction:column; min-width:0; min-height:0; height:100%
 .bento{display:grid; grid-template-columns:repeat(4,1fr); grid-auto-flow:row dense; gap:var(--gap)}
 .s2{grid-column:span 2}
 .feature{grid-column:span 2; grid-row:span 2}
+.feature.alt{grid-column:3 / span 2}
 @media (max-width:780px){
   .bento{grid-template-columns:1fr}
-  .s2,.feature{grid-column:span 1} .feature{grid-row:auto}
+  .s2,.feature,.feature.alt{grid-column:span 1} .feature{grid-row:auto}
 }
 
 .card{
@@ -447,7 +448,7 @@ iframe{border:0; width:100%; flex:1; min-height:0; background:var(--surface)}
           <div class="hero-grid">
             <div class="text">
               <h1><span class="ln"><span>כל כלי ה-Power BI</span></span><span class="ln"><span>של היחידה, <em>במקום אחד</em></span></span></h1>
-              <p class="lede">שישה כלים לעבודה מול Power BI: אפיון מפגשים, שימור ידע, קטלוג ויזואלים, סקירת דוחות ועדכוני AI שבועיים.</p>
+              <p class="lede">שבעה כלים לעבודה מול Power BI: אפיון מפגשים, שימור ידע, קטלוג ויזואלים, סקירת דוחות, עריכת דוחות בתוך VS Code ועדכוני AI שבועיים.</p>
               <div class="cta-row">
                 <button class="btn btn-primary" id="ctaCatalog">
                   <i data-lucide="bar-chart-3" style="width:17px;height:17px"></i> פתיחת קטלוג הוויזואלים
@@ -459,9 +460,9 @@ iframe{border:0; width:100%; flex:1; min-height:0; background:var(--surface)}
             </div>
 
             <div class="figures">
-              <div><b class="num">6</b><span>כלים וקטלוגים</span></div>
+              <div><b class="num">7</b><span>כלים וקטלוגים</span></div>
               <div><b class="num">44</b><span>ויזואלים בקטלוג</span></div>
-              <div><b class="num">2</b><span>מדריכי התקנה</span></div>
+              <div><b class="num">3</b><span>מדריכי התקנה</span></div>
               <div><b class="num">4</b><span>נהלי עבודה</span></div>
             </div>
           </div>
@@ -535,17 +536,19 @@ const tools = [
   { id:'scanner-guide',       ic:'shield-check',   title:'מדריך התקנה לסורק הדוחות', desc:'איך להתקין ולהפעיל את ה-Skill שסוקר דוחות Power BI ומחזיר דוח ביקורת מסודר בעברית.',               tag:'מדריך התקנה',      src:'scanner-guide.html' },
   { id:'html-catalog',        ic:'bar-chart-3',    title:'קטלוג ויזואלי Power BI',   desc:'גרסת HTML חיה לכל ויזואל מובנה של Power BI, עם נתוני דוגמה, תגובה לסלייסר ופאנל סגנון להעתקת DAX.', tag:'קטלוג חי',         src:'html-catalog.html', big:'44', bigNote:'ויזואלים מובנים, חיים בדפדפן' },
   { id:'data-ai-corner',      ic:'brain',          title:'פינת DATA&AI',             desc:'ארכיון העדכונים השבועיים: כלים וטיפים חדשים בעולמות ה-Power BI וה-AI, לפי תאריך.',                 tag:'ארכיון שבועי',     src:'data-ai-corner.html' },
+  { id:'power-viz',           ic:'code',           title:'Power Viz ל-VS Code',      desc:'עורכים דוח Power BI ישירות בתוך VS Code ורואים את השינויים מיד בתצוגה חיה, בלי Power BI Desktop. מדריך התקנה מלא וסרטון.', tag:'מדריך התקנה',      src:'power-viz-guide.html', big:'4', bigNote:'מצבי נתונים, כולל עבודה אופליין' },
 ];
 const byId = id => tools.find(t => t.id === id);
 
 /* Bento: 4-col grid, 2 uniform columns of 2.
-   row1: feature(rows 1-2) + 1 cell · row2: feature + 1 cell · row3-4: 2 cells each.
-   Exactly 8 cells for 6 tools + 1 download. No empty cell. */
+   rows 1-2: catalog feature + 2 cells · rows 3-4: 2 cells + Power Viz feature (alt side) · row 5: 2 cells.
+   Exactly 20 units for 7 tools + 1 download. No empty cell. */
 const layout = [
   { id:'html-catalog',        cls:'feature' },
   { id:'meeting-brief',       cls:'s2' },
   { id:'knowledge-retention', cls:'s2' },
   { id:'mcp-guide',           cls:'s2' },
+  { id:'power-viz',           cls:'feature alt' },
   { id:'scanner-guide',       cls:'s2' },
   { id:'data-ai-corner',      cls:'s2' },
 ];
