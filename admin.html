@@ -134,13 +134,13 @@ tr:last-child td{border-bottom:0}
   <ol>
     <li>היכנס לחשבון ב-<a href="https://rkariel.goatcounter.com" target="_blank" rel="noopener">rkariel.goatcounter.com</a>.</li>
     <li>בתפריט העליון לחץ על שם המשתמש שלך ← <b>API</b>, וצור מפתח חדש.</li>
-    <li>סמן רק את ההרשאה <b>Read statistics</b>, שמור, והעתק את המפתח לכאן.</li>
+    <li>סמן רק את ההרשאה <b>Read statistics</b>, שמור, והדבק את המפתח כאן. הנתונים ייטענו מיד.</li>
   </ol>
   <form id="loginForm" autocomplete="off">
     <label class="field" for="token">מפתח API</label>
     <input class="inp" id="token" type="password" spellcheck="false" autocomplete="off" required>
     <label class="row"><input type="checkbox" id="remember" checked> לזכור אותי במכשיר הזה</label>
-    <button class="pbtn" type="submit" id="loginBtn">כניסה</button>
+    <button class="pbtn" type="submit" id="loginBtn">כניסה וטעינת הנתונים</button>
     <div class="err" id="loginErr" role="alert"></div>
   </form>
   <p class="fine">למה מפתח ולא סיסמה: האתר סטטי ואין לו שרת. המפתח הוא מה שמגן על הנתונים, כי GoatCounter לא ימסור אותם בלעדיו. כדאי ליצור מפתח עם הרשאת קריאה בלבד.</p>
@@ -188,7 +188,7 @@ tr:last-child td{border-bottom:0}
     </section>
     <section class="card">
       <h2>סוג מכשיר</h2>
-      <p class="note">לפי רוחב המסך של הגולש.</p>
+      <p class="note">לפי מערכת ההפעלה של הגולש.</p>
       <ul class="list" id="sizes"></ul>
     </section>
   </div>
@@ -241,6 +241,7 @@ $('loginForm').addEventListener('submit', async e => {
   try {
     await api('/me', {}, t);
     setToken(t, $('remember').checked);
+    $('loginErr').textContent = '';
     showDash(); load();
   } catch (err) {
     $('loginErr').textContent = err.auth === 401 ? 'המפתח לא תקין. בדוק שהעתקת אותו במלואו.'
@@ -248,6 +249,16 @@ $('loginForm').addEventListener('submit', async e => {
       : 'לא הצלחתי להתחבר ל-GoatCounter: ' + err.message;
   } finally { $('loginBtn').disabled = false; }
 });
+let autoT;
+const tryAuto = () => {
+  clearTimeout(autoT);
+  autoT = setTimeout(() => {
+    const v = $('token').value.trim();
+    if (v.length >= 30 && !/\s/.test(v) && !$('loginBtn').disabled) $('loginForm').requestSubmit();
+  }, 250);
+};
+$('token').addEventListener('paste', tryAuto);
+$('token').addEventListener('input', tryAuto);
 $('logout').addEventListener('click', () => { clearToken(); showLogin(); });
 $('refresh').addEventListener('click', () => load());
 
@@ -283,30 +294,43 @@ async function hubTools(){
 let loading = false;
 async function load(){
   if (loading) return; loading = true;
-  $('status').textContent = 'טוען…';
+  $('status').textContent = 'טוען נתונים…';
   try {
     const r = range();
     // GoatCounter allows 4 requests a second: two at a time is comfortably inside it.
-    const [hits, total] = await Promise.all([ api('/stats/hits', { ...r, limit: 100 }), api('/stats/total', r) ]);
-    const [refs, sizes] = await Promise.all([ api('/stats/toprefs', { ...r, limit: 8 }), api('/stats/sizes', r) ]);
+    const [hitsR, totalR] = await Promise.allSettled([ api('/stats/hits', { ...r, limit: 100 }), api('/stats/total', r) ]);
+    const [refsR, sysR] = await Promise.allSettled([ api('/stats/toprefs', { ...r, limit: 8 }), api('/stats/systems', { ...r, limit: 10 }) ]);
+    // screen sizes only as a fallback: they are often not reported, the operating system always is
+    const sizesR = (sysR.status === 'fulfilled' && (sysR.value.stats || []).length) ? { status: 'fulfilled', value: { stats: [] } }
+      : (await Promise.allSettled([ api('/stats/sizes', r) ]))[0];
+    const all = [hitsR, totalR, refsR, sysR];
+    if (all.some(x => x.status === 'rejected' && x.reason.auth === 401)) throw Object.assign(new Error('auth'), { auth: 401 });
+    const val = (x, fb) => x.status === 'fulfilled' ? x.value : fb;
     const tools = await hubTools();
-    render(hits.hits || [], total, refs.stats || [], sizes.stats || [], tools);
-    $('status').textContent = 'עודכן ב-' + new Date().toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
+    render(val(hitsR, {}).hits || [], val(totalR, { stats: [] }), val(refsR, {}).stats || [], { systems: val(sysR, {}).stats || [], sizes: val(sizesR, {}).stats || [] }, tools);
+    const failed = all.filter(x => x.status === 'rejected').length;
+    const when = new Date().toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
+    $('status').textContent = failed ? `עודכן ב-${when}, אבל ${failed} מתוך 4 חלקים לא נטענו. נסה רענון.` : `עודכן ב-${when} · מתרענן כל דקה`;
   } catch (err) {
     if (err.auth) { clearToken(); showLogin('פג תוקף הכניסה או שהמפתח בוטל. התחבר מחדש.'); }
     else $('status').textContent = err.message;
   } finally { loading = false; }
 }
+setInterval(() => { if (!$('dashView').hidden && !document.hidden) load(); }, 60000);
+document.addEventListener('visibilitychange', () => { if (!document.hidden && !$('dashView').hidden) load(); });
 
-function render(hits, total, refs, sizes, tools){
+function render(hits, total, refs, devices, tools){
   const byPath = {};
   hits.forEach(h => { byPath[h.path] = (byPath[h.path] || 0) + (h.count || 0); });
-  const hubViews = (byPath[base] || 0) + (byPath[base + 'index.html'] || 0);
+  // match pages by file name, so it works whatever prefix GoatCounter recorded (/ariel-ai-hub/... or /...)
+  const pages = hits.filter(h => !h.event);
+  const pageSum = test => pages.filter(h => test(h.path)).reduce((n, h) => n + (h.count || 0), 0);
+  const hubViews = pageSum(p => p.endsWith('/') || p.endsWith('/index.html'));
   const opens = hits.filter(h => h.event && h.path.startsWith('open/')).reduce((s, h) => s + h.count, 0);
 
   const rows = tools.map(t => {
     const hub = byPath['open/' + t.id] || 0;
-    const direct = byPath[base + t.src] || 0;
+    const direct = pageSum(p => p.endsWith('/' + t.src));
     return { title: t.title, hub, direct, sum: hub + direct };
   });
   // events or pages for tools no longer in the hub still deserve a row
@@ -325,10 +349,29 @@ function render(hits, total, refs, sizes, tools){
     || '<tr><td colspan="4" class="empty">אין עדיין נתונים בטווח הזה.</td></tr>';
 
   renderList('refs', refs.map(s => ({ name: s.name || 'כניסה ישירה', count: s.count })), 'אין עדיין נתונים.');
-  const SIZE = { 'Phones': 'טלפון', 'Tablets': 'טאבלט', 'Computers': 'מחשב', 'Computer monitors': 'מסך גדול', 'Larger monitors': 'מסך גדול', '(unknown)': 'לא ידוע' };
-  renderList('sizes', sizes.map(s => ({ name: SIZE[s.name] || s.name || 'לא ידוע', count: s.count })), 'אין עדיין נתונים.');
+  renderList('sizes', deviceRows(devices), 'אין עדיין נתונים.');
 
   renderChart(total.stats || []);
+}
+
+/* device type from the operating system (always reported); screen size only if no OS data came back */
+function deviceRows({ systems = [], sizes = [] }){
+  const MOBILE = /android|ios|ipad|iphone/i, DESKTOP = /windows|mac|linux|chrome ?os|ubuntu/i;
+  if (systems.length){
+    const kind = n => MOBILE.test(n) ? 'טלפון / טאבלט' : DESKTOP.test(n) ? 'מחשב' : 'אחר';
+    const groups = {};
+    systems.forEach(s => {
+      const os = s.name && s.name !== '(unknown)' ? s.name : 'לא ידוע';
+      const k = os === 'לא ידוע' ? 'לא ידוע' : kind(os);
+      (groups[k] = groups[k] || { count: 0, os: [] }).count += s.count;
+      if (os !== 'לא ידוע') groups[k].os.push(os);
+    });
+    return Object.entries(groups).sort((a, b) => b[1].count - a[1].count)
+      .map(([k, g]) => ({ name: g.os.length ? `${k} (${[...new Set(g.os)].join(', ')})` : k, count: g.count }));
+  }
+  const SIZE = { 'Phones': 'טלפון', 'Large phones, small tablets': 'טלפון גדול / טאבלט קטן', 'Tablets and small laptops': 'טאבלט / מחשב נייד קטן',
+    'Computer monitors': 'מחשב', 'Computer monitors larger than HD': 'מחשב, מסך גדול', '(unknown)': 'לא ידוע' };
+  return sizes.map(s => ({ name: SIZE[s.name] || s.name || 'לא ידוע', count: s.count }));
 }
 
 function renderList(id, items, emptyText){
