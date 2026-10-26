@@ -98,6 +98,13 @@ body{
   font-size:13px; color:var(--teal-ink); text-decoration:none; border-bottom:1px solid transparent;
 }
 .entry a.lnk:hover{border-color:var(--teal-ink)}
+.entry ul{margin:0 0 10px; padding-inline-start:18px; max-width:72ch; font-size:14px; color:var(--slate)}
+.entry li{margin-bottom:4px}
+.entry .links{display:flex; flex-wrap:wrap; gap:6px 16px}
+/* files attached to an entry: shown in place, each also opens on its own */
+.entry .media{display:block; margin:4px 0 12px; max-width:640px}
+.entry .media img,.entry .media video{display:block; width:100%; height:auto; border:1px solid var(--line); border-radius:12px; background:var(--line-soft)}
+.entry .media.tall{max-width:340px}
 
 footer{max-width:900px; margin:0 auto; padding:0 clamp(18px,4vw,32px) 50px; color:var(--faint); font-size:13px}
 </style>
@@ -114,6 +121,100 @@ footer{max-width:900px; margin:0 auto; padding:0 clamp(18px,4vw,32px) 50px; colo
 </div>
 
 <div class="wrap">
+
+  <div class="week">
+    <div class="week-head"><span class="week-date">21.10</span><span class="week-rule"></span></div>
+    <div class="entries">
+      <div class="entry cc">
+        <div class="eic">🤖</div>
+        <div class="ebody">
+          <span class="etag">CLAUDE</span>
+          <h2>חידושים ב-Claude</h2>
+          <ul>
+            <li>משפחת מודלים חדשה: Opus 5.5, Sonnet 5.5, Haiku 5.5, עם בחירת רמת מאמץ</li>
+            <li>צ'אט ועבודה משותפת: Claude יוצר מסמכים (Docs), מצגות (Slides), עיצובים (Design) ואנימציות (Motion) בתוך השיחה, בבטא</li>
+            <li>Claude Code 2.1.305: סקירות Code Review חוזרות לא ייפתחו ב-LGTM כל עוד יש ממצאים חוסמים פתוחים</li>
+          </ul>
+          <a class="lnk" href="corner/2026-10-21-claude-updates-he.pdf" target="_blank" rel="noopener">📄 חידושי Claude בעברית (PDF) ↗</a>
+        </div>
+      </div>
+      <div class="entry">
+        <div class="eic">📊</div>
+        <div class="ebody">
+          <span class="etag">POWER BI</span>
+          <h2>חידושים ב-Power BI</h2>
+          <ul>
+            <li>עדכון אוקטובר 2026 מביא חידושי Desktop</li>
+            <li>ה-Report Authoring skill של Microsoft הגיע ל-GA: מתארים דוח בשפה חופשית והסוכן בונה אותו מעל המודל הסמנטי</li>
+          </ul>
+          <a class="media tall" href="corner/2026-10-21-power-bi-october-2026.jpg" target="_blank" rel="noopener"><img src="corner/2026-10-21-power-bi-october-2026.jpg" alt="אינפוגרפיקה: עדכון Power BI אוקטובר 2026" loading="lazy"></a>
+          <a class="lnk" href="https://community.fabric.microsoft.com/blog/fbc_pbiupdatesblog/power-bi-october-2026-feature-summary/5374650" target="_blank" rel="noopener">🔗 סיכום עדכון אוקטובר 2026 ↗</a>
+        </div>
+      </div>
+      <div class="entry">
+        <div class="eic">🎨</div>
+        <div class="ebody">
+          <span class="etag">POWER BI</span>
+          <h2>עבודה עם custom visuals</h2>
+          <ul>
+            <li>ה-skills של Microsoft עובדים עכשיו גם עם custom visuals, לא רק עם ויזואלים מובנים</li>
+            <li>זה עובד גם עם HTML content visuals</li>
+            <li>בסרטון של Amal Ben Rebai: מתארים בשפה חופשית ויזואל חדש מאפס, הסוכן בונה אותו עם ה-toolchain של ויזואלים, מטמיע אותו בדוח, ומשתמש במדדי ה-DAX הקיימים</li>
+            <li>בתמונה: ה-Budget Variance Explorer שנבנה כך</li>
+          </ul>
+          <span class="media"><video src="corner/2026-10-21-budget-variance-explorer.mp4" controls preload="metadata" playsinline></video></span>
+          <a class="lnk" href="corner/2026-10-21-budget-variance-explorer.mp4" target="_blank" rel="noopener">🎥 פתיחת הסרטון ↗</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="week">
+    <div class="week-head"><span class="week-date">7.10</span><span class="week-rule"></span></div>
+    <div class="entries">
+      <div class="entry cc">
+        <div class="eic">💻</div>
+        <div class="ebody">
+          <span class="etag">CLAUDE CODE</span>
+          <h2>Claude Code Mods</h2>
+          <p>עד היום, מי שרצה ש-Claude Code יעבוד אחרת נאלץ לעבוד מסביבו. מעכשיו אפשר פשוט לשנות אותו מבפנים: כותבים תוסף קטן שחי בתוך הכלי ורואה את כל מה שקורה בזמן אמת. התוסף יכול לעצור פעולה לפני שהיא מתבצעת ולבדוק או לחסום אותה, להוסיף פקודות משלכם, ואפילו לשנות את המסך עצמו. התוצאה: הכלי עובד בדיוק כמו שהצוות שלכם עובד - ולא להיפך.</p>
+          <div class="links">
+            <a class="lnk" href="https://claude.com/blog/claude-code-mods" target="_blank" rel="noopener">🔗 claude.com ↗</a>
+            <a class="lnk" href="https://code.claude.com/docs/en/plugins/mods/overview" target="_blank" rel="noopener">🔗 התיעוד ↗</a>
+          </div>
+        </div>
+      </div>
+      <div class="entry cc">
+        <div class="eic">⏳</div>
+        <div class="ebody">
+          <span class="etag">CLAUDE CODE</span>
+          <h2>בונוס: עצירה נקייה במגבלת חמש השעות</h2>
+          <p>מי שהגיע פעם למגבלת חמש השעות באמצע עבודה, מכיר את העצירה הפתאומית באמצע עריכה. מעכשיו Claude Code לא נעצר בבום - הוא מסיים את מה שהתחיל ומגיע לנקודת עצירה נקייה, והתוספת הקטנה הזו יורדת מהמכסה השבועית.</p>
+          <a class="lnk" href="https://x.com/ClaudeDevs/status/2103561342057943314" target="_blank" rel="noopener">🔗 x.com/ClaudeDevs ↗</a>
+        </div>
+      </div>
+      <div class="entry cc">
+        <div class="eic">📎</div>
+        <div class="ebody">
+          <span class="etag">CLAUDE</span>
+          <h2>Claude נכנס לתוך Google Docs, Sheets ו-Slides</h2>
+          <p>תוסף חדש מוסיף סרגל צד של Claude ישירות בתוך המסמך, הגיליון או המצגת. Claude קורא את הקובץ הפתוח ועורך אותו במקום: ניסוח מחדש וארגון של מסמכים ב-Docs, בניית מודלים ותיקון נוסחאות ב-Sheets, שילוף ושיפור שקפים ב-Slides. כל שינוי נשמר בהיסטוריית הגרסאות, ואפשר לשאול שאלות על הקובץ ולקבל תשובות עם הפניה למקום המדויק.</p>
+          <p>שימו לב שהפעם זה הפוך מהחיבורים הקיימים: לא Claude שמחפש ב-Drive שלכם, אלא Claude שמגיע אל הקובץ שאתם כבר בתוכו. במנויי Pro, Max, Team ו-Enterprise, בשלבי beta, ודורש שהארגון יאשר התקנת אפליקציות מ-Google Workspace Marketplace.</p>
+          <a class="lnk" href="https://claude.com/resources/articles/claude-now-works-in-google-docs-sheets-and-slides" target="_blank" rel="noopener">🔗 claude.com ↗</a>
+        </div>
+      </div>
+      <div class="entry">
+        <div class="eic">📊</div>
+        <div class="ebody">
+          <span class="etag">POWER BI</span>
+          <h2>Power BI - עדכון גרסת ספטמבר 2026</h2>
+          <p>שני פיצ'רים חביבים מעדכון הגרסה האחרון: מחבר Outlook Mail חדש שמושך מיילים, תיקיות וקבצים מצורפים ישירות לתוך Power BI Desktop - בלי ייצוא ידני ובלי קבצי ביניים. ועורך Power Query שעבר מתיחת פנים: מראה מודרני ונקי שמקרב את הדסקטופ לחוויה שכבר מכירים מה-Service, כך שמי שעובד בשניהם לא צריך יותר לקפוץ בין שני עולמות.</p>
+          <p>ובשורה מתוקה למי שמייצא הרבה: מגבלת הייצוא לאקסל ב"נתונים בפריסה הנוכחית" עלתה מ-150 אלף לחצי מיליון שורות.</p>
+          <a class="lnk" href="https://community.fabric.microsoft.com/blog/fbc_pbiupdatesblog/power-bi-september-2026-feature-summary/5325831" target="_blank" rel="noopener">🔗 סיכום עדכון ספטמבר 2026 ↗</a>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <div class="week">
     <div class="week-head"><span class="week-date">23.9</span><span class="week-rule"></span></div>
