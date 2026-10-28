@@ -672,9 +672,12 @@ function openTool(t){
   track('open/' + t.id, 'פתיחה מה-Hub: ' + t.title);
   document.getElementById('dash').classList.remove('on');
   document.getElementById('frame-view').classList.add('on');
-  document.getElementById('frame').src = t.src;
+  // a fresh copy on every open: tools are framed, so a normal refresh of the hub
+  // does not reload them, and a cached guide would hide new content
+  const fresh = t.src + '?v=' + Date.now();
+  document.getElementById('frame').src = fresh;
   document.getElementById('frame-title').textContent = t.title;
-  document.getElementById('frame-open').href = t.src;
+  document.getElementById('frame-open').href = t.src;   // clean address: counted as one path
   document.querySelectorAll('nav.tools button').forEach(b => b.classList.remove('on'));
   document.getElementById('nav-' + t.id).classList.add('on');
   closeDrawer();

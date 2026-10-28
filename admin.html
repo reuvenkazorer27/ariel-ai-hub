@@ -324,7 +324,7 @@ function render(hits, total, refs, devices, tools){
   hits.forEach(h => { byPath[h.path] = (byPath[h.path] || 0) + (h.count || 0); });
   // match pages by file name, so it works whatever prefix GoatCounter recorded (/ariel-ai-hub/... or /...)
   const pages = hits.filter(h => !h.event);
-  const pageSum = test => pages.filter(h => test(h.path)).reduce((n, h) => n + (h.count || 0), 0);
+  const pageSum = test => pages.filter(h => test(h.path.split('?')[0])).reduce((n, h) => n + (h.count || 0), 0);
   const hubViews = pageSum(p => p.endsWith('/') || p.endsWith('/index.html'));
   const opens = hits.filter(h => h.event && h.path.startsWith('open/')).reduce((s, h) => s + h.count, 0);
 
