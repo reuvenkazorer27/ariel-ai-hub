@@ -248,9 +248,10 @@ main{display:flex; flex-direction:column; min-width:0; min-height:0; height:100%
 .s2{grid-column:span 2}
 .feature{grid-column:span 2; grid-row:span 2}
 .feature.alt{grid-column:3 / span 2}
+.wide{grid-column:1 / -1}
 @media (max-width:780px){
   .bento{grid-template-columns:1fr}
-  .s2,.feature,.feature.alt{grid-column:span 1} .feature{grid-row:auto}
+  .s2,.feature,.feature.alt,.wide{grid-column:span 1} .feature{grid-row:auto}
 }
 
 .card{
@@ -543,6 +544,7 @@ const tools = [
   { id:'html-catalog',        ic:'bar-chart-3',    title:'קטלוג ויזואלי Power BI',   desc:'גרסת HTML חיה לכל ויזואל מובנה של Power BI, עם נתוני דוגמה, תגובה לסלייסר ופאנל סגנון להעתקת DAX.', tag:'קטלוג חי',         src:'html-catalog.html', big:'44', bigNote:'ויזואלים מובנים, חיים בדפדפן' },
   { id:'data-ai-corner',      ic:'brain',          title:'פינת DATA&AI',             desc:'ארכיון העדכונים השבועיים: כלים וטיפים חדשים בעולמות ה-Power BI וה-AI, לפי תאריך.',                 tag:'ארכיון שבועי',     src:'data-ai-corner.html' },
   { id:'power-viz',           ic:'code',           title:'Power Viz ל-VS Code',      desc:'עורכים דוח Power BI ישירות בתוך VS Code ורואים את השינויים מיד בתצוגה חיה, בלי Power BI Desktop. מדריך התקנה מלא וסרטון.', tag:'מדריך התקנה',      src:'power-viz-guide.html', big:'4', bigNote:'מצבי נתונים, כולל עבודה אופליין' },
+  { id:'ai-session',          ic:'presentation',   title:'ההקשר הוא העיקר',          desc:'מצגת מפגש Data & AI: אותו מודל, אותה שאלה, וההקשר שהוא מקבל הוא שקובע את התשובה. שלוש דרכים לבנות הקשר: ספרייה, גרף ולולאה.', tag:'מצגת סשן AI',      src:'ההקשר-הוא-העיקר.html' },
 ];
 const byId = id => tools.find(t => t.id === id);
 
@@ -557,6 +559,7 @@ const layout = [
   { id:'power-viz',           cls:'feature alt' },
   { id:'scanner-guide',       cls:'s2' },
   { id:'data-ai-corner',      cls:'s2' },
+  { id:'ai-session',          cls:'wide' },
 ];
 
 const nav   = document.getElementById('nav');
