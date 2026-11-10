@@ -5334,9 +5334,7 @@ IF(
     if (viewerItem) { copyText(promptFor(viewerItem), this); }
   });
   dlg.addEventListener("close", function () {
-    vStage.srcdoc = "<!doctype html><html><body><!-- visit counting: GoatCounter, no cookies, no personal data -->
-<script data-goatcounter="https://rkariel.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
-</body></html>";
+    vStage.srcdoc = "<!doctype html><html><body></body></html>";
     viewerItem = null;
   });
   dlg.addEventListener("click", function (e) { if (e.target === dlg) { dlg.close(); } });
@@ -5468,3 +5466,5 @@ IF(
   window.addEventListener("resize", debounce(paintVisible, 200));
 })();
 </script>
+<!-- visit counting: GoatCounter, no cookies, no personal data -->
+<script data-goatcounter="https://rkariel.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
