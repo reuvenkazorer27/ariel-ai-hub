@@ -455,7 +455,7 @@ iframe{border:0; width:100%; flex:1; min-height:0; background:var(--surface)}
           <div class="hero-grid">
             <div class="text">
               <h1><span class="ln"><span>כל כלי ה-Power BI</span></span><span class="ln"><span>של היחידה, <em>במקום אחד</em></span></span></h1>
-              <p class="lede">שבעה כלים לעבודה מול Power BI: אפיון מפגשים, שימור ידע, קטלוג ויזואלים, סקירת דוחות, עריכת דוחות בתוך VS Code ועדכוני AI שבועיים.</p>
+              <p class="lede">עשרה כלים ומדריכים ליחידה: אפיון מפגשים, שימור ידע, קטלוג ויזואלים, סקירת דוחות, עריכת דוחות בתוך VS Code, עדכוני AI שבועיים, מדריך GitHub וצ׳קליסט להצגת הסוכנים.</p>
               <div class="cta-row">
                 <button class="btn btn-primary" id="ctaCatalog">
                   <i data-lucide="bar-chart-3" style="width:17px;height:17px"></i> פתיחת קטלוג הוויזואלים
@@ -467,7 +467,7 @@ iframe{border:0; width:100%; flex:1; min-height:0; background:var(--surface)}
             </div>
 
             <div class="figures">
-              <div><b class="num">7</b><span>כלים וקטלוגים</span></div>
+              <div><b class="num" id="toolCount">10</b><span>כלים ומדריכים</span></div>
               <div><b class="num">44</b><span>ויזואלים בקטלוג</span></div>
               <div><b class="num">3</b><span>מדריכי התקנה</span></div>
               <div><b class="num">4</b><span>נהלי עבודה</span></div>
@@ -549,6 +549,7 @@ const tools = [
   { id:'agent-prep',          ic:'list-checks',    title:'הצגת הסוכנים: מה נדרש',  desc:'צ׳קליסט הכנה לצוותים להצגה ב-21.12: שבעה נושאים, מה להציג בכל אחד ואיזו ראיה להביא מהריפו.', tag:'צ׳קליסט',          src:'agent-presentation-prep.html' },
 ];
 const byId = id => tools.find(t => t.id === id);
+{ const n = document.getElementById('toolCount'); if (n) n.textContent = tools.length; }
 
 /* Bento: 4-col grid, 2 uniform columns of 2.
    rows 1-2: catalog feature + 2 cells · rows 3-4: 2 cells + Power Viz feature (alt side) · row 5: 2 cells.
