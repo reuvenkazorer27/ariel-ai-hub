@@ -546,6 +546,7 @@ const tools = [
   { id:'power-viz',           ic:'code',           title:'Power Viz ל-VS Code',      desc:'עורכים דוח Power BI ישירות בתוך VS Code ורואים את השינויים מיד בתצוגה חיה, בלי Power BI Desktop. מדריך התקנה מלא וסרטון.', tag:'מדריך התקנה',      src:'power-viz-guide.html', big:'4', bigNote:'מצבי נתונים, כולל עבודה אופליין' },
   { id:'ai-session',          ic:'presentation',   title:'ההקשר הוא העיקר',          desc:'מצגת מפגש Data & AI: אותו מודל, אותה שאלה, וההקשר שהוא מקבל הוא שקובע את התשובה. שלוש דרכים לבנות הקשר: ספרייה, גרף ולולאה.', tag:'מצגת סשן AI',      src:'ההקשר-הוא-העיקר.html' },
   { id:'github-guide',        ic:'git-branch',     title:'גיטהאב מא׳ עד ת׳',         desc:'מדריך מעשי בעברית ל-Git ול-GitHub, מאפס ובלי ידע בתכנות: ריפו, ענפים, Pull Request, עבודת צוות, Actions, Pages ואבטחה. כולל סרטונים ומבחן מסכם.', tag:'מדריך',            src:'github-guide/index.html' },
+  { id:'agent-prep',          ic:'list-checks',    title:'הצגת הסוכנים: מה נדרש',  desc:'צ׳קליסט הכנה לצוותים להצגה ב-21.12: שבעה נושאים, מה להציג בכל אחד ואיזו ראיה להביא מהריפו.', tag:'צ׳קליסט',          src:'agent-presentation-prep.html' },
 ];
 const byId = id => tools.find(t => t.id === id);
 
@@ -562,6 +563,7 @@ const layout = [
   { id:'data-ai-corner',      cls:'s2' },
   { id:'ai-session',          cls:'wide' },
   { id:'github-guide',        cls:'wide' },
+  { id:'agent-prep',          cls:'wide' },
 ];
 
 const nav   = document.getElementById('nav');
