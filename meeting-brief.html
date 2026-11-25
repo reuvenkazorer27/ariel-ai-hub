@@ -139,6 +139,9 @@ textarea::placeholder{color:var(--muted);opacity:.75}
 .req-banner span{font-size:14px;color:var(--d-body)}
 .req-body{color:var(--slate);font-size:14.5px;line-height:1.6;margin:12px 0 0}
 .req-body b{color:var(--ink)}
+.req-steps{margin:10px 0 0;padding-inline-start:20px;color:var(--slate);font-size:14.5px;line-height:1.7}
+.req-steps b{color:var(--ink)}
+.req-tip{margin:12px 0 0;padding:10px 14px;border-radius:12px;background:var(--accent-soft);border:1px solid var(--line);color:var(--ink);font-size:14px;line-height:1.6}
 .callout{
   background:var(--teal-soft);border:1px solid var(--accent-line);border-radius:16px;
   padding:20px 22px;margin-top:22px;
@@ -211,10 +214,21 @@ textarea::placeholder{color:var(--muted);opacity:.75}
     <p class="req-body">הצגה בפועל של הדשבורדים או המערכות שנבנו - לא רק לספר עליהם, אלא להראות אותם: מה הם עושים, למי הם משרתים ואיך משתמשים בהם.</p>
   </section>
 
+  <section class="section">
+    <div class="sec-head"><div class="sec-num">9</div><div><h2>לכל תהליך ופרויקט: איך זה היה, איך זה היום ומה הפתרון פותר</h2></div></div>
+    <p class="req-body">בכל תהליך או פרויקט שמוצג יש להראות שלושה מצבים:</p>
+    <ul class="req-steps">
+      <li><b>איך זה התבצע עד עכשיו</b> - מי עשה מה, באילו כלים ומערכות, כמה זמן זה לקח ואיפה נוצרו טעויות.</li>
+      <li><b>איך זה היום</b> - איך התהליך מתבצע עכשיו, ומה בו עדיין ידני.</li>
+      <li><b>איך מה שבניתם פותר</b> - מה המערכת או הדשבורד משנים בתהליך, בהקשר של המערכות בארגון: מאיפה מגיעים הנתונים, לאן הם הולכים ומה נחסך בדרך.</li>
+    </ul>
+    <p class="req-tip"><b>המלצה:</b> לפעמים דיאגרמה של התהליך, לפני ואחרי, מסבירה את זה הכי טוב.</p>
+  </section>
+
   <div class="callout">
     <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>הזרימה</h3>
     <ol>
-      <li>מכינים מצגת שעונה על כל שמונת הסעיפים שלמעלה.</li>
+      <li>מכינים מצגת שעונה על כל תשעת הסעיפים שלמעלה.</li>
       <li>מציגים אותה - ולאחר מכן קובעים עם ראובן פגישה <b>בשבוע שלפני</b> מפגש המנהלים, למעבר משותף ומסודר על המצגת ועל הדשבורדים.</li>
     </ol>
   </div>
